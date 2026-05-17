@@ -1,0 +1,36 @@
+{
+  "name": "fotaza2-0.1.0",
+  "version": "1.0.0",
+  "description": "Comunidad web para compartir y gestionar imágenes.\r Desarrollado para la cátedra **Programación Web II**.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "tailwind": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FerrandoCarlos/Fotaza2-Ferrando-Carlos-0.1.0.git"
+  },
+  "keywords": [],
+  "author": "Ferrando Carlos",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/FerrandoCarlos/Fotaza2-Ferrando-Carlos-0.1.0/issues"
+  },
+  "homepage": "https://github.com/FerrandoCarlos/Fotaza2-Ferrando-Carlos-0.1.0#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
+    "pug": "^3.0.4",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  }
+}
