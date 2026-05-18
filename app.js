@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import sequelize from './config/db.js';
+import { connectDatabase } from './config/database.js';
 import indexRouter from './src/routes/index.js';
 
 dotenv.config();
@@ -32,19 +32,19 @@ app.use(express.static(join(__dirname, 'public')));
 // Rutas
 app.use('/', indexRouter);
 
-// Sincronización BD + arranque del servidor
+// Conexión BD + arranque del servidor
 
-try {
-  await sequelize.authenticate();
-  console.log('✔️ Conexión a la BD establecida');
+connectDatabase()
+  .then(() => {
+    app.listen(PORT, (err) => {
+      if (err) {
+        console.error('✖️ Error al iniciar el servidor:', err);
+        return;
+      }
 
-  await sequelize.sync({ alter: true });
-  console.log('✔️ BD sincronizada');
-
-  app.listen(PORT, () => {
-    console.log(`🚀 Fotaza 2 corriendo desde http://localhost:${PORT}`);
+      console.log(`🚀 Fotaza 2 corriendo desde http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('✖️ Error sincronizando con BD:', err);
   });
-} catch (error) {
-  console.error('✖️ Error al conectar la BD:', error.message);
-  process.exit(1);
-}
