@@ -2,6 +2,7 @@ import sequelize from './db.js';
 import { Usuario } from '../src/models/Usuario.js';
 import { Rol } from '../src/models/Rol.js';
 import { UsuarioRol } from '../src/models/UsuarioRol.js';
+import { Sesion } from '../src/models/Sesion.js';
 
 /**
  * @fileoverview Configuración central de la BD.
@@ -12,9 +13,12 @@ import { UsuarioRol } from '../src/models/UsuarioRol.js';
 //  Relaciones
 
 // Usuario y Rol (N:M)
-
 Usuario.belongsToMany(Rol, { through: UsuarioRol, foreignKey: 'usuario_id' });
 Rol.belongsToMany(Usuario, { through: UsuarioRol, foreignKey: 'rol_id' });
+
+// Usuario y Sesion (1:N)
+Usuario.hasMany(Sesion, { foreignKey: 'usuario_id' });
+Sesion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 /**
  * @function connectDatabase
