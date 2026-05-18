@@ -60,13 +60,17 @@ Desarrollado para la cátedra **Programación Web II**.
 
     Editar `.env` con tus datos de PostgreSQL
 
-4.  Compilar Tailwind _(terminal 1)_
+4.  Inicializar la base de datos
+
+        npm run db:init
+
+5.  Compilar Tailwind _(terminal 1)_
 
         npm run tailwind
 
-5.  Arrancar el servidor _(terminal 2)_
+6.  Arrancar el servidor _(terminal 2)_
 
-        npm run dev
+        npm start
 
 ## 🧑🏻 Desarrollado por
 
