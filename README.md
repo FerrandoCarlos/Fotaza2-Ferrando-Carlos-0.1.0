@@ -64,11 +64,7 @@ Desarrollado para la cátedra **Programación Web II**.
 
         npm run db:init
 
-5.  Compilar Tailwind _(terminal 1)_
-
-        npm run tailwind
-
-6.  Arrancar el servidor _(terminal 2)_
+5.  Arrancar el servidor _(terminal 1)_
 
         npm start
 
