@@ -6,6 +6,9 @@ import { Sesion } from '../src/models/Sesion.js';
 import { Licencia } from '../src/models/Licencia.js';
 import { Publicacion } from '../src/models/Publicacion.js';
 import { Imagen } from '../src/models/Imagen.js';
+import { Etiqueta } from '../src/models/Etiqueta.js';
+import { PublicacionEtiqueta } from '../src/models/PublicacionEtiqueta.js';
+
 /**
  * @fileoverview Configuración central de la BD.
  * Define relaciones entre modelos y sincroniza con PostgreSQL.
@@ -33,6 +36,16 @@ Licencia.hasMany(Imagen, { foreignKey: 'licencia_id' });
 // Usuario y Publicacion (1:N)
 Usuario.hasMany(Publicacion, { foreignKey: 'usuario_id' });
 Publicacion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+//Publicacion y Etiqueta (N:M)
+Publicacion.belongsToMany(Etiqueta, {
+  through: PublicacionEtiqueta,
+  foreignKey: 'publicacion_id',
+});
+Etiqueta.belongsToMany(Publicacion, {
+  through: PublicacionEtiqueta,
+  foreignKey: 'etiqueta_id',
+});
 
 /**
  * @function connectDatabase
