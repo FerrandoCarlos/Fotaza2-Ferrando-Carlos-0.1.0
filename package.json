@@ -5,10 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "node --watch app.js",
-    "tailwind": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db:init": "node src/utils/dbInit.js"
+    "dev": "concurrently \"node --watch app.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch\"",
+    "db:init": "node src/utils/dbInit.js",
+    "tailwind": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
   },
   "repository": {
     "type": "git",
@@ -32,6 +31,7 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
+    "concurrently": "^9.2.1",
     "tailwindcss": "^4.3.0"
   }
 }
