@@ -8,6 +8,8 @@ import { Publicacion } from '../src/models/Publicacion.js';
 import { Imagen } from '../src/models/Imagen.js';
 import { Etiqueta } from '../src/models/Etiqueta.js';
 import { PublicacionEtiqueta } from '../src/models/PublicacionEtiqueta.js';
+import { Comentario } from '../src/models/Comentario.js';
+import { Valoracion } from '../src/models/Valoracion.js';
 
 /**
  * @fileoverview Configuración central de la BD.
@@ -46,6 +48,22 @@ Etiqueta.belongsToMany(Publicacion, {
   through: PublicacionEtiqueta,
   foreignKey: 'etiqueta_id',
 });
+
+// Publicacion y Comentario (1:N)
+Publicacion.hasMany(Comentario, { foreignKey: 'publicacion_id' });
+Comentario.belongsTo(Publicacion, { foreignKey: 'publicacion_id' });
+
+// Usuario y Comentario (1:N)
+Usuario.hasMany(Comentario, { foreignKey: 'usuario_id' });
+Comentario.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+// Imagen y Valoracion (1:N)
+Imagen.hasMany(Valoracion, { foreignKey: 'imagen_id' });
+Valoracion.belongsTo(Imagen, { foreignKey: 'imagen_id' });
+
+// Usauario y Valoracion (1:N)
+Usuario.hasMany(Valoracion, { foreignKey: 'usuario_id' });
+Valoracion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 /**
  * @function connectDatabase
