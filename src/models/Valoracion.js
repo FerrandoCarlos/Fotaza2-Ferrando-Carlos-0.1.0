@@ -57,7 +57,7 @@ Valoracion.init(
     indexes: [
       {
         unique: true,
-        fields: ['imagen_id ', 'usuario_id'],
+        fields: ['imagen_id', 'usuario_id'],
       },
     ],
   }
