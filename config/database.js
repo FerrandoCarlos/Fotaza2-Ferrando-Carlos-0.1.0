@@ -3,7 +3,9 @@ import { Usuario } from '../src/models/Usuario.js';
 import { Rol } from '../src/models/Rol.js';
 import { UsuarioRol } from '../src/models/UsuarioRol.js';
 import { Sesion } from '../src/models/Sesion.js';
-
+import { Licencia } from '../src/models/Licencia.js';
+import { Publicacion } from '../src/models/Publicacion.js';
+import { Imagen } from '../src/models/Imagen.js';
 /**
  * @fileoverview Configuración central de la BD.
  * Define relaciones entre modelos y sincroniza con PostgreSQL.
@@ -19,6 +21,18 @@ Rol.belongsToMany(Usuario, { through: UsuarioRol, foreignKey: 'rol_id' });
 // Usuario y Sesion (1:N)
 Usuario.hasMany(Sesion, { foreignKey: 'usuario_id' });
 Sesion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+// Publicacion e Imagen (1:N)
+Publicacion.hasMany(Imagen, { foreignKey: 'publicacion_id' });
+Imagen.belongsTo(Publicacion, { foreignKey: 'publicacion_id' });
+
+// Imagen y Licencia (N:1)
+Imagen.belongsTo(Licencia, { foreignKey: 'licencia_id' });
+Licencia.hasMany(Imagen, { foreignKey: 'licencia_id' });
+
+// Usuario y Publicacion (1:N)
+Usuario.hasMany(Publicacion, { foreignKey: 'usuario_id' });
+Publicacion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 /**
  * @function connectDatabase

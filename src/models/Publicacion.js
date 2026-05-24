@@ -20,47 +20,49 @@ import sequelize from '../../config/db.js';
 
 export class Publicacion extends Model {}
 
-Publicacion.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  usuario_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'usuarios',
-      key: 'id',
+Publicacion.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-  },
-  titulo: {
-    type: DataTypes.STRING(200),
-    allowNull: false,
-  },
-  descripcion: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  estado: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    defaultValue: 'activo',
-    validate: {
-      isIn: [['activo', 'baja', 'revision']],
+    usuario_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'usuarios',
+        key: 'id',
+      },
     },
-  },
+    titulo: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+    },
+    descripcion: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    estado: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: 'activo',
+      validate: {
+        isIn: [['activo', 'baja', 'revision']],
+      },
+    },
     comentarios_cerrados: {
-        type: DataTypes.BOOLEAN,
-        dafaultValue: false
+      type: DataTypes.BOOLEAN,
+      dafaultValue: false,
     },
-    {
-        sequelize,
-        modelName: 'Publicacion',
-        tableName: 'publicaciones',
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-        paranoid:true
-    }
-});
+  },
+  {
+    sequelize,
+    modelName: 'Publicacion',
+    tableName: 'publicaciones',
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
+    paranoid: true,
+  }
+);
