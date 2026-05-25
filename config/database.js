@@ -10,6 +10,7 @@ import { Etiqueta } from '../src/models/Etiqueta.js';
 import { PublicacionEtiqueta } from '../src/models/PublicacionEtiqueta.js';
 import { Comentario } from '../src/models/Comentario.js';
 import { Valoracion } from '../src/models/Valoracion.js';
+import { Seguimiento } from '../src/models/Seguimiento.js';
 
 /**
  * @fileoverview Configuración central de la BD.
@@ -64,6 +65,21 @@ Valoracion.belongsTo(Imagen, { foreignKey: 'imagen_id' });
 // Usauario y Valoracion (1:N)
 Usuario.hasMany(Valoracion, { foreignKey: 'usuario_id' });
 Valoracion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+// Usuario y Segumiento (relación recursiva N:M)
+Usuario.belongsToMany(Usuario, {
+  through: Seguimiento,
+  as: 'seguidos',
+  foreignKey: 'seguidor_id',
+  otherKey: 'seguido_id',
+});
+
+Usuario.belongsToMany(Usuario, {
+  through: Seguimiento,
+  as: 'seguidores',
+  foreignKey: 'seguido_id',
+  otherKey: 'seguidor_id',
+});
 
 /**
  * @function connectDatabase
