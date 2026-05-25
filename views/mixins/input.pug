@@ -1,0 +1,12 @@
+//- views/mixins/input.pug
+mixin input(label, id, type, name, placeholder)
+  div
+    label(for=id class="block text-sm text-gray-400 mb-1") #{label}
+    input(
+      id=id
+      type=type
+      name=name
+      placeholder=placeholder
+      required
+      class="w-full bg-zinc-800 border border-zinc-700 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-400"
+    )
