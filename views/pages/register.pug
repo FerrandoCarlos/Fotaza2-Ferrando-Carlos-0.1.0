@@ -1,0 +1,25 @@
+extends ../layout.pug
+
+include ../mixins/input.pug
+include ../mixins/button.pug
+
+block content
+  section(class="flex items-center justify-center py-16 px-4")
+    div(class="w-full max-w-md")
+      h1(class="text-3xl font-bold text-amber-400 text-center mb-8") Crear cuenta
+
+      form(action="/register" method="POST" class="bg-zinc-900 rounded-xl p-8 flex flex-col gap-5")
+
+        +input('Nombre', 'nombre', 'text', 'nombre', 'Ingresa tu nombre')
+        +input('Apellido', 'apellido', 'text', 'apellido', 'Ingresa tu apellido')
+        +input('Email', 'email', 'email', 'email', 'example@email.com')
+        +input('Contraseña', 'password', 'password', 'password', 'Mínimo 8 caracteres')
+
+        if error
+          p(class="text-red-400 text-sm text-center") #{error}
+
+        +btnPrimario('Registrarse')
+
+        p(class="text-gray-500 text-sm text-center")
+          |¿Ya tenes cuenta?
+          a(class="text-amber-400 hover:underline" href="/login") Inicia sesión
