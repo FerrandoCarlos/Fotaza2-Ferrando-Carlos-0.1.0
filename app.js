@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { connectDatabase } from './config/database.js';
 import indexRouter from './src/routes/index.js';
+import authRoutes from './src/routes/authRoutes.js';
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ app.use(express.static(join(__dirname, 'public')));
 
 // Rutas
 app.use('/', indexRouter);
-
+app.use('/', authRoutes);
 // Conexión BD + arranque del servidor
 
 connectDatabase()

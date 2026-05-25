@@ -1,9 +1,10 @@
 extends ../layout.pug
 
-include ../mixins/input.pug
-include ../mixins/button.pug
 
 block content
+  include ../mixins/input.pug
+  include ../mixins/button.pug
+
   section(class="flex items-center justify-center py-16 px-4")
     div(class="w-full max-w-md")
       h1(class="text-3xl font-bold text-amber-400 text-center mb-8") Crear cuenta
@@ -21,5 +22,5 @@ block content
         +btnPrimario('Registrarse')
 
         p(class="text-gray-500 text-sm text-center")
-          |¿Ya tenes cuenta?
+          span(class="mr-1") ¿Ya tenes cuenta?
           a(class="text-amber-400 hover:underline" href="/login") Inicia sesión
