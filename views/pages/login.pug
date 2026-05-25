@@ -1,0 +1,23 @@
+extends ../layout.pug
+
+block content
+  include ../mixins/input.pug
+  include ../mixins/button.pug
+
+  section(class="flex items-center justify-center py-16 px-4")
+    div(class="w-full max-w-md")
+      h1(class="text-3xl font-bold text-amber-400 text-center mb-8") Iniciar sesión
+
+      form(action="/login" method="POST" class="bg-zinc-900 rounded-xl p-8 flex flex-col gap-5")
+
+        +input('Email', 'email', 'email','email','example@email.com')
+        +input('Contraseña', 'password', 'password','password','Ingresa tu contraseña')
+
+        if error
+          p(class="text-red-400 text-sm text-center") #{error}
+
+        +btnPrimario('Ingresar')
+
+        p(class="text-gray-500 text-sm text-center")
+          span(class="mr-1") ¿No tenes cuenta?
+          a(class="text-amber-400 hover:underline" href="/register") Registrate
