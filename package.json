@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "concurrently \"node --watch app.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch\"",
     "db:init": "node src/utils/dbInit.js",
-    "tailwind": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch"
+    "seed": "node src/utils/seed.js"
   },
   "repository": {
     "type": "git",
