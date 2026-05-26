@@ -1,8 +1,8 @@
-import { Publicacion } from '../models/Publicacion';
-import { Imagen } from '../models/Imagen';
-import { Usuario } from '../models/Usuario';
-import { Etiqueta } from '../models/Etiqueta';
-import { Licencia } from '../models/Licencia';
+import { Publicacion } from '../models/Publicacion.js';
+import { Imagen } from '../models/Imagen.js';
+import { Usuario } from '../models/Usuario.js';
+import { Etiqueta } from '../models/Etiqueta.js';
+import { Licencia } from '../models/Licencia.js';
 
 /**
  * @fileoverview Controller de la página de inicio.
