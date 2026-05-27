@@ -3,11 +3,11 @@ mixin card(pub)
     if pub.Imagens && pub.Imagens.length
       figure(class="relative")
         if pub.Imagens[0].Licencia && pub.Imagens[0].Licencia.tiene_copyright
-          img(class="w-full h-48 object-cover blur-sm" src=pub.Images[0].datos alt=pub.titulo)
+          img(class="w-full h-48 object-cover blur-sm" src=pub.Imagens[0].datos alt=pub.titulo)
           div(class="absolute inset-0 flex items-center justify-center")
             span(class="text-amber-400 text-4xl") 🔒
         else
-          img(class="w-full h-48 object-cover" src=pub.Images[0].datos alt=pub.titulo)
+          img(class="w-full h-48 object-cover" src=pub.Imagens[0].datos alt=pub.titulo)
     else
       div(class="w-full h-48 bg-zinc-800 flex items-center justify-center")
         span(class="text-gray-600") Sin imagen
