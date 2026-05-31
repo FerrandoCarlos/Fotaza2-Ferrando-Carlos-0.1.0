@@ -8,7 +8,46 @@ import { Licencia } from '../models/Licencia.js';
  * @fileoverview Controller de la página de inicio.
  * @module controllers/homeController
  */
+/**
+ * @function detalle
+ * @description Muestra el detalle de una publicación.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+export async function detalle(req, res) {
+  try {
+    const { id } = req.params;
 
+    const publicacion = await Publicacion.findOne({
+      where: { id, estado: 'activo' },
+      include: [
+        { model: Usuario, attributes: ['nombre', 'apellido'] },
+        {
+          model: Imagen,
+          as: 'Imagens',
+          include: [{ model: Licencia }],
+        },
+        { model: Etiqueta },
+      ],
+    });
+    console.log(JSON.stringify(publicacion.toJSON(), null, 2));
+    if (!publicacion) {
+      return res.status(404).render('pages/index', {
+        title: 'Inicio',
+        publicaciones: [],
+        etiquetas: [],
+      });
+    }
+
+    res.render('pages/detalle', {
+      title: publicacion.titulo,
+      publicacion,
+    });
+  } catch (error) {
+    console.error('✖️ Error en detalle: ', error.message);
+    res.redirect('/');
+  }
+}
 /**
  * @function index
  * @description Muestra la galería pública de publicaciones.

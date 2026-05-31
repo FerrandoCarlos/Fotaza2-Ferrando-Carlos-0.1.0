@@ -1,0 +1,33 @@
+extends ../layout.pug
+
+block content
+  include ../mixins/button.pug
+
+  section(class="max-w-4xl mx-auto px-8 py-12")
+    if publicacion.Imagens && publicacion.Imagens.length
+      figure(class="relative mb-8 rounded-xl overflow-hidden")
+        if publicacion.Imagens[0].Licencium && publicacion.Imagens[0].Licencium.tiene_copyright
+          img(class="w-full max-h-96 object-cover blur-sm" src=publicacion.Imagens[0].datos alt=publicacion.titulo)
+          div(class="absolute inset-0 flex flex-col items-center justify-center gap-2")
+            span(class="text-amber-400 text-6xl") 🔒
+            p(class="text-white text-sm") Contenido con copyright
+        else
+          img(class="w-full max-h-96 object-cover" src=publicacion.Imagens[0].datos alt=publicacion.titulo)
+
+      div(class="mb-6")
+        h1(class="text-3xl font-bold text-gray-100 mb-2")= publicacion.titulo
+        p(class="text-gray-500 text-sm")
+          | Por
+          span(class="text-amber-400 p-1") #{publicacion.Usuario ? publicacion.Usuario.nombre + ' ' + publicacion.Usuario.apellido : 'Anónimo'}
+          | ·
+          time #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
+
+      if publicacion.descripcion
+        p(class="text-gray-400 mb-6 leading-relaxed") #{publicacion.descripcion}
+
+      if publicacion.Etiqueta && publicacion.Etiqueta.length
+        div(class="flex flex-wrap gap-2 mb-8")
+          each etiqueta in publicacion.Etiqueta
+            span(class="bg-zinc-800 text-gray-300 px-3 py-1 rounded-full text-sm") # #{etiqueta.nombre}
+
+    a(class="text-amber-400 hover:underline text-sm" href="/") ← Volver al inicio

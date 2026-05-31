@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { index } from '../controllers/homeController.js';
+import { index, detalle } from '../controllers/homeController.js';
 
 /**
  * @fileoverview Rutas principales de la app
@@ -13,5 +13,5 @@ const router = Router();
  * @description Página de inicio
  */
 router.get('/', index);
-
+router.get('/publicacion/:id', detalle);
 export default router;
