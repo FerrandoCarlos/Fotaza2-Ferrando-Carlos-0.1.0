@@ -30,7 +30,7 @@ export async function detalle(req, res) {
         { model: Etiqueta },
       ],
     });
-    console.log(JSON.stringify(publicacion.toJSON(), null, 2));
+
     if (!publicacion) {
       return res.status(404).render('pages/index', {
         title: 'Inicio',

@@ -22,16 +22,19 @@
   },
   "homepage": "https://github.com/FerrandoCarlos/Fotaza2-Ferrando-Carlos-0.1.0#readme",
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "pg": "^8.20.0",
-    "pg-hstore": "^2.3.4",
-    "pug": "^3.0.4",
-    "sequelize": "^6.37.8"
+    "bcrypt": "6.0.0",
+    "dotenv": "17.4.2",
+    "express": "5.2.1",
+    "express-session": "1.19.0",
+    "pg": "8.20.0",
+    "pg-hstore": "2.3.4",
+    "pug": "3.0.4",
+    "sequelize": "6.37.8",
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.3.0",
-    "concurrently": "^9.2.1",
-    "tailwindcss": "^4.3.0"
+    "@tailwindcss/cli": "4.3.0",
+    "concurrently": "9.2.1",
+    "tailwindcss": "4.3.0"
   }
 }

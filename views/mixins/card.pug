@@ -1,5 +1,5 @@
 mixin card(pub)
-  a(href="/publicacion/${pub.id}" class="block")
+  a(href=`/publicacion/${pub.id}` class="block")
     article(class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-amber-400 transition-colors")
       if pub.Imagens && pub.Imagens.length
         figure(class="relative")
