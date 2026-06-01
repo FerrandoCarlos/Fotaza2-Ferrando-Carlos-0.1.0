@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../../config/db.js';
+import bcrypt, { genSalt } from 'bcrypt';
 
 /**
  * @fileoverview Modelo de Usuario
@@ -60,5 +61,13 @@ Usuario.init(
     deletedAt: true,
     updatedAt: false,
     paranoid: true,
+    hooks: {
+      beforeSave: async (usuario) => {
+        if (!usuario.password_hash) return;
+        if (!usuario.isNewRecord && !usuario.changed('password_hash')) return;
+        const salt = await genSalt(10);
+        usuario.password_hash = await bcrypt.hash(usuario.password_hash, salt);
+      },
+    },
   }
 );
