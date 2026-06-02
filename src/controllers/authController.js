@@ -53,7 +53,7 @@ export async function login(req, res) {
   const resultado = schemaLogin.safeParse(req.body);
   if (!resultado.success) {
     const mensaje = resultado.error.errors[0].message;
-    return res.remder('pages/login', {
+    return res.render('pages/login', {
       alert: { status: 'error', text: mensaje },
       formValues: req.body,
     });
