@@ -10,9 +10,10 @@ html(lang="en")
     title= title
     link(rel="stylesheet", href="/css/output.css")
   body(class="bg-zinc-950 text-gray-100 min-h-screen flex flex-col")
-
+    +alert(alert)
     section(class="flex items-center justify-center py-16 px-4")
       div(class="w-full max-w-md")
+        a(class="block text-amber-400 hover:underline text-sm mb-6" href="/") ← Volver al inicio
         h1(class="text-3xl font-bold text-amber-400 text-center mb-8") Crear cuenta
 
         form(action="/register" method="POST" class="bg-zinc-900 rounded-xl p-8 flex flex-col gap-5")
@@ -21,7 +22,7 @@ html(lang="en")
           +input('Apellido', 'apellido', 'text', 'apellido', 'Ingresa tu apellido', formValues ? formValues.apellido : '')
           +input('Email', 'email', 'email', 'email', 'example@email.com', formValues ? formValues.email : '')
           +input('Contraseña', 'password', 'password', 'password', 'Mínimo 8 caracteres','')
-          +input('Confirmar contraseña', 'comfirPassword','password','confirmPassword','Repetí tu contraseña', '')
+          +input('Confirmar contraseña', 'confirmPassword','password','confirmPassword','Repetí tu contraseña', '')
           +btnPrimario('Registrarse')
 
           p(class="text-gray-500 text-sm text-center")
