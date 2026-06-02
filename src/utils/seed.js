@@ -1,4 +1,5 @@
 import { connectDatabase } from '../../config/database.js';
+import sequelize from '../../config/db.js';
 import { Usuario } from '../models/Usuario.js';
 import { Rol } from '../models/Rol.js';
 import { Licencia } from '../models/Licencia.js';
@@ -30,6 +31,10 @@ async function imagenBase64(url) {
 async function seed() {
   await connectDatabase();
 
+  await sequelize.query(
+    'TRUNCATE TABLE publicacion_etiquetas, imagenes, publicaciones, etiquetas, licencias, usuario_roles, sesiones, usuarios, roles RESTART IDENTITY CASCADE'
+  );
+
   // Roles
   const roles = await Rol.bulkCreate([
     { nombre: 'usuario', descripcion: 'Usuario registrado' },
@@ -37,26 +42,29 @@ async function seed() {
   ]);
 
   // Usuarios
-  const usuarios = await Usuario.bulkCreate([
-    {
-      nombre: 'Carlos',
-      apellido: 'Ferrando',
-      email: 'carlos@fotaza.com',
-      password_hash: '12345678',
-    },
-    {
-      nombre: 'Ana',
-      apellido: 'Gomez',
-      email: 'ana@fotaza.com',
-      password_hash: '12345678',
-    },
-    {
-      nombre: 'Luis',
-      apellido: 'Martinez',
-      email: 'luis@fotaza.com',
-      password_hash: '12345678',
-    },
-  ]);
+  const usuarios = await Usuario.bulkCreate(
+    [
+      {
+        nombre: 'Carlos',
+        apellido: 'Ferrando',
+        email: 'carlos@fotaza.com',
+        password_hash: '12345678',
+      },
+      {
+        nombre: 'Ana',
+        apellido: 'Gomez',
+        email: 'ana@fotaza.com',
+        password_hash: '12345678',
+      },
+      {
+        nombre: 'Luis',
+        apellido: 'Martinez',
+        email: 'luis@fotaza.com',
+        password_hash: '12345678',
+      },
+    ],
+    { individualHooks: true }
+  );
 
   // Licencias
   const licencias = await Licencia.bulkCreate([
@@ -178,6 +186,10 @@ async function seed() {
     { publicacion_id: publicaciones[4].id, etiqueta_id: etiquetas[4].id },
     { publicacion_id: publicaciones[5].id, etiqueta_id: etiquetas[6].id },
   ]);
+
+  const count = await Usuario.count();
+  console.log(`✅ Usuarios en BD: ${count}`);
+
   console.log('✅ Seed completado');
   process.exit(0);
 }
