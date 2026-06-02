@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../../config/db.js';
-import bcrypt, { genSalt } from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 /**
  * @fileoverview Modelo de Usuario
@@ -19,7 +19,17 @@ import bcrypt, { genSalt } from 'bcrypt';
  * @property {Date|null} deletedAt - Fecha de baja lógica
  */
 
-export class Usuario extends Model {}
+export class Usuario extends Model {
+  /**
+   * @method verificarPassword
+   * @description Verifica si la contraseña ingresada coincide con el hash guardado.
+   * @param {string} password - Contraseña en texto plano
+   * @returns {Promise<boolean>}
+   */
+  async verificarPassword(password) {
+    return bcrypt.compare(password, this.password_hash);
+  }
+}
 
 Usuario.init(
   {
@@ -52,6 +62,10 @@ Usuario.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   },
   {
     sequelize,
@@ -65,7 +79,7 @@ Usuario.init(
       beforeSave: async (usuario) => {
         if (!usuario.password_hash) return;
         if (!usuario.isNewRecord && !usuario.changed('password_hash')) return;
-        const salt = await genSalt(10);
+        const salt = await bcrypt.genSalt(10);
         usuario.password_hash = await bcrypt.hash(usuario.password_hash, salt);
       },
     },
