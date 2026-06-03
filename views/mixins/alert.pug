@@ -7,11 +7,11 @@ mixin alert(alert=undefined)
           p(class="text-sm") #{alert.text}
       when "success"
         div(class="flex items-center gap-3 bg-green-950 border border-green-800 text-green-400 px-4 py-3 rounded-lg mb-4")
-          span(class="text-lg") ✖
+          span(class="text-lg") ✔
           p(class="text-sm") #{alert.text}
       when "warning"
         div(class="flex items-center gap-3 bg-amber-950 border border-amber-800 text-amber-400 px-4 py-3 rounded-lg mb-4")
-          span(class="text-lg") ✖
+          span(class="text-lg") ⚠
           p(class="text-sm") #{alert.text}
       default
         div(class="flex items-center gap-3 bg-zinc-800 border border-zinc-700 text-gray-300 px-4 py-3 rounded-lg mb-4")

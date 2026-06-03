@@ -36,14 +36,22 @@ export function mostrarLogin(req, res) {
       ? { status: 'success', text: '¡Cuenta creada! Inicia sesión.' }
       : null;
 
-  res.render('pages/login', { alert, formValues: null });
+  res.render('pages/login', {
+    title: 'Iniciar sesión',
+    alert,
+    formValues: null,
+  });
 }
 /**
  * @function mostrarRegistro
  * @description Muestra el formulario de registro.
  */
 export function mostrarRegistro(req, res) {
-  res.render('pages/register', { alert: null, formValues: null });
+  res.render('pages/register', {
+    title: 'Registrarse',
+    alert: null,
+    formValues: null,
+  });
 }
 /**
  * @function login

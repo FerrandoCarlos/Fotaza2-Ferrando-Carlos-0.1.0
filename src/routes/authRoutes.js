@@ -1,4 +1,11 @@
 import { Router } from 'express';
+import {
+  mostrarLogin,
+  mostrarRegistro,
+  login,
+  registro,
+  logout,
+} from '../controllers/authController.js';
 
 /**
  * @fileoverview Rutas de autenticación.
@@ -11,18 +18,28 @@ const router = Router();
  * @route GET /register
  * @description Página de registro.
  */
-
-router.get('/register', (req, res) => {
-  res.render('pages/register', { title: 'Registrarse' });
-});
-
+router.get('/register', mostrarRegistro);
+/**
+ * @route POST /register
+ * @description Procesa el formulario de registro.
+ */
+router.post('/register', registro);
 /**
  * @route GET /login
  * @description Página de login.
  */
 
-router.get('/login', (req, res) => {
-  res.render('pages/login', { title: 'Ingresar' });
-});
+router.get('/login', mostrarLogin);
+
+/**
+ * @route POST /login
+ * @description Procesa el formulario de login.
+ */
+router.post('/login', login);
+/**
+ * @route POST /logout
+ * @description Cierra la sesión del usuario.
+ */
+router.get('/logout', logout);
 
 export default router;
