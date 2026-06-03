@@ -5,8 +5,12 @@ header(class="bg-zinc-900 border-b border-zinc-800")
     //- Menú de escritorio
     div(class="hidden sm:flex items-center gap-8")
       a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/") Inicio
-      a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/login") Ingresar
-      a(class="bg-amber-400 text-zinc-950 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors" href="/register") Registrarse
+      if currentUser
+        span(class="text-amber-400 text-sm font-medium") #{currentUser.nombre}
+        a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/logout") Cerrar sesión
+      else
+        a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/login") Ingresar
+        a(class="bg-amber-400 text-zinc-950 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors" href="/register") Registrarse
     //- Botón Hamburguesa (Móvil)
     div(class="sm:hidden")
       button#navbar-toggle(
@@ -29,5 +33,9 @@ header(class="bg-zinc-900 border-b border-zinc-800")
   div#navbar-menu(class="hidden sm:hidden border-t border-zinc-800")
     div(class="flex flex-col px-8 py-4 gap-4")
       a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/") Inicio
-      a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/login") Ingresar
-      a(class="text-amber-400 font-semibold text-sm" href="/register") Registrarse
+      if currentUser
+        span(class="text-amber-400 text-sm font-medium") #{currentUser.nombre}
+        a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/logout") Cerrar sesión
+      else
+        a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/login") Ingresar
+        a(class="text-amber-400 font-semibold text-sm" href="/register") Registrarse
