@@ -73,6 +73,7 @@ export async function index(req, res) {
     });
 
     // usuarios anónimos solo deben ver publicaciones sin copy
+
     const publicacionesFiltradas = currentUser
       ? publicaciones
       : publicaciones.filter((p) =>
@@ -83,7 +84,7 @@ export async function index(req, res) {
 
     res.render('pages/index', {
       title: 'Inicio',
-      publicaciones,
+      publicaciones: publicacionesFiltradas,
       etiquetas,
     });
   } catch (error) {

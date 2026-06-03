@@ -17,15 +17,7 @@ export async function authMiddleware(req, res, next) {
   }
   try {
     const usuario = await Usuario.findByPk(userId, {
-      attributes: [
-        'id',
-        'nombre',
-        'apellido',
-        'email',
-        'avatar_url',
-        'rol',
-        'activo',
-      ],
+      attributes: ['id', 'nombre', 'apellido', 'email', 'avatar_url', 'activo'],
     });
     if (!usuario) {
       req.session.destroy();

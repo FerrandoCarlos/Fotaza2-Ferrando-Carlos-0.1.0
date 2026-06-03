@@ -11,6 +11,11 @@
       "use": "@vercel/node"
     }
   ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  },
   "routes": [
     {
       "handle": "filesystem"
