@@ -17,7 +17,7 @@ block content
     if publicaciones && publicaciones.length
       div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6")
         each pub in publicaciones
-          +card(pub)
+          +card(pub,currentUser)
     else
       p(class="text-gray-500 text-center py-12") No hay publicaciones todavía
 
