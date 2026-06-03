@@ -57,6 +57,8 @@ export async function detalle(req, res) {
 
 export async function index(req, res) {
   try {
+    const currentUser = res.locals.currentUser;
+
     const publicaciones = await Publicacion.findAll({
       where: { estado: 'activo' },
       include: [
@@ -69,6 +71,13 @@ export async function index(req, res) {
       ],
       order: [['createdAt', 'DESC']],
     });
+
+    // usuarios anónimos solo deben ver publicaciones sin copy
+    const publicacionesFiltradas = currentUser
+      ? publicaciones
+      : publicaciones.filter((p) =>
+          p.Imagens.every((img) => !img.Licencia?.tiene_copyright)
+        );
 
     const etiquetas = await Etiqueta.findAll();
 

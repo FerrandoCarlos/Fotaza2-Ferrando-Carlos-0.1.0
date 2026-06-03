@@ -17,7 +17,15 @@ export async function authMiddleware(req, res, next) {
   }
   try {
     const usuario = await Usuario.findByPk(userId, {
-      attributes: ['id', 'nombre', 'apellido', 'email', 'avatar_url'],
+      attributes: [
+        'id',
+        'nombre',
+        'apellido',
+        'email',
+        'avatar_url',
+        'rol',
+        'activo',
+      ],
     });
     if (!usuario) {
       req.session.destroy();
@@ -36,6 +44,10 @@ export async function authMiddleware(req, res, next) {
  */
 export function requireAuth(req, res, next) {
   if (!res.locals.currentUser) {
+    return res.redirect('/login');
+  }
+  if (!res.locals.currentUser.activo) {
+    req.session.destroy();
     return res.redirect('/login');
   }
   next();

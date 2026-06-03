@@ -1,12 +1,12 @@
 import express from 'express';
+import session from 'express-session';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { connectDatabase } from './config/database.js';
+import { authMiddleware } from './src/middlewares/auth.js';
 import indexRouter from './src/routes/index.js';
 import authRoutes from './src/routes/authRoutes.js';
-import session from 'express-session';
-import { authMiddleware } from './src/middlewares/auth.js';
 
 dotenv.config();
 
