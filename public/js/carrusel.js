@@ -23,6 +23,6 @@ if (carrusel && dots.length) {
   // Auto avance cada 4 seg
   setInterval(() => {
     goTo((current + 1) % dots.length);
-  }, 4000);
+  }, 8000);
   goTo(0);
 }

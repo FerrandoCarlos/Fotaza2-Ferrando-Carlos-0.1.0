@@ -31,12 +31,15 @@ export async function detalle(req, res) {
       ],
     });
 
-    if (!publicacion) {
-      return res.status(404).render('pages/index', {
-        title: 'Inicio',
-        publicaciones: [],
-        etiquetas: [],
-      });
+    if (!publicacion) return res.redirect('/');
+
+    // si anónimo ingresa a una imagen con copy a registro
+    const tieneCopyright = publicacion.Imagens.some(
+      (img) => img.Licencium?.tiene_copyright
+    );
+
+    if (tieneCopyright && !res.locals.currentUser) {
+      return res.redirect('/login');
     }
 
     res.render('pages/detalle', {
@@ -72,19 +75,22 @@ export async function index(req, res) {
       order: [['createdAt', 'DESC']],
     });
 
-    // usuarios anónimos solo deben ver publicaciones sin copy
-
-    const publicacionesFiltradas = currentUser
-      ? publicaciones
-      : publicaciones.filter((p) =>
-          p.Imagens.every((img) => !img.Licencia?.tiene_copyright)
-        );
+    // Se muestran en carrusel solo publicaciones publicas
+    const publicacionesCarrusel = publicaciones.filter((p) => {
+      return (
+        p.Imagens &&
+        p.Imagens.length &&
+        p.Imagens[0].Licencium &&
+        !p.Imagens[0].Licencium.tiene_copyright
+      );
+    });
 
     const etiquetas = await Etiqueta.findAll();
 
     res.render('pages/index', {
       title: 'Inicio',
-      publicaciones: publicacionesFiltradas,
+      publicaciones,
+      publicacionesCarrusel,
       etiquetas,
     });
   } catch (error) {
@@ -92,6 +98,7 @@ export async function index(req, res) {
     res.render('pages/index', {
       title: 'Inicio',
       publicaciones: [],
+      publicacionesCarrusel: [],
       etiquetas: [],
     });
   }

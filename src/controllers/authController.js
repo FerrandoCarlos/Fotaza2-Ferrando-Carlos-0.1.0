@@ -59,8 +59,9 @@ export function mostrarRegistro(req, res) {
  */
 export async function login(req, res) {
   const resultado = schemaLogin.safeParse(req.body);
+
   if (!resultado.success) {
-    const mensaje = resultado.error.errors[0].message;
+    const mensaje = resultado.error.issues[0].message ?? 'Datos inválidos';
     return res.render('pages/login', {
       alert: { status: 'error', text: mensaje },
       formValues: req.body,
@@ -69,6 +70,7 @@ export async function login(req, res) {
   const { email, password } = resultado.data;
   try {
     const usuario = await Usuario.findOne({ where: { email } });
+
     const passwordValida =
       usuario && (await usuario.verificarPassword(password));
 
@@ -104,7 +106,7 @@ export async function login(req, res) {
 export async function registro(req, res) {
   const resultado = schemaRegistro.safeParse(req.body);
   if (!resultado.success) {
-    const mensaje = resultado.error.errors[0].message;
+    const mensaje = resultado.error.issues[0].message ?? 'Datos inválidos';
     return res.render('pages/register', {
       alert: { status: 'error', text: mensaje },
       formValues: req.body,
