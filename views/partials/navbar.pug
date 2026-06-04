@@ -6,7 +6,11 @@ header(class="bg-zinc-900 border-b border-zinc-800")
     div(class="hidden sm:flex items-center gap-8")
       a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/") Inicio
       if currentUser
-        span(class="text-amber-400 text-sm font-medium") #{currentUser.nombre}
+        a(href="/perfil" class="flex items-center gap-2")
+          if currentUser.avatar_url
+            img(class="w-8 h-8 rounded-full object-cover" src=currentUser.avatar_url)
+          else
+            span(class="w-8 h-8 rounded-full bg-amber-400 text-zinc-950 text-sm font-bold flex items-center justify-center") #{currentUser.nombre[0].toUpperCase()}#{currentUser.apellido[0].toUpperCase()}
         a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/logout") Cerrar sesión
       else
         a(class="text-gray-400 hover:text-amber-400 transition-colors text-sm font-medium" href="/login") Ingresar
