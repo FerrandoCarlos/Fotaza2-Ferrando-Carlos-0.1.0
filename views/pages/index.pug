@@ -7,6 +7,21 @@ block content
       div(class="flex flex-col items-center mb-6")
         h1#hero-title(class="text-4xl font-bold text-amber-400") Bienvenido a
         img(class="h-40 w-auto" src="/img/logoMain.png" alt="Logo Fotaza 2")
+      //- Carrusel
+      div(class="w-full max-w-4xl overflow-hidden rounded-xl mb-8")
+        div#carrusel(class="flex transition-transform duration-500 ease-in-out")
+          each pub in publicaciones.slice(0,5)
+            if pub.Imagens && pub.Imagens.length
+              div(class="min-w-full h-64 relative shrink-0")
+                img(class="w-full h-full object-cover" src=pub.Imagens[0].datos alt=pub.titulo)
+                div(class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-4")
+                  p(class="text-white font-semibold text-sm")  pub.titulo
+                  p(class="text-gray-300 text-xs") #{pub.Usuario ? pub.Usuario.nombre + ''+ pub.Usuario.apellido : ''}
+      //- Controles
+      div(class="flex justify-center gap-2 mt-3")
+        each pub, i in publicaciones.slice(0,5)
+          if pub.Imagens && pub.Imagens.length
+            button(class="w-2 h-2 rounded-full bg-zinc-600 hover:bg-amber-400 transition-colors carrusel-dot" data-index=i)
       p(class="text-gray-400 text-xl mb-10 max-w-xl") Compartí y descubrí fotografías increíbles de la comunidad
       div(class="flex gap-4")
         a(class="bg-amber-400 text-zinc-950 font-semibold px-6 py-3 rounded-lg hover:bg-amber-300 transition-colors" href="/register") Comenzar
