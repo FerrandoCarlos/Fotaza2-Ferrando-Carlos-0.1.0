@@ -7,6 +7,7 @@ import { connectDatabase } from './config/database.js';
 import { authMiddleware } from './src/middlewares/auth.js';
 import indexRouter from './src/routes/index.js';
 import authRoutes from './src/routes/authRoutes.js';
+import publicacionRoutes from './src/routes/publicacionRoutes.js';
 
 dotenv.config();
 
@@ -27,6 +28,9 @@ const __dirname = dirname(__filename);
 app.set('view engine', 'pug');
 app.set('views', join(__dirname, 'views'));
 
+// 🚀 1. AGREGAR TRUST PROXY (Fundamental para que Render no tire las sesiones)
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -46,8 +50,12 @@ app.use(
 app.use(authMiddleware);
 
 // Rutas
-app.use('/', indexRouter);
+// rutas de autenticación
 app.use('/', authRoutes);
+// rutas de publicaciones
+app.use('/', publicacionRoutes);
+// rutas de index
+app.use('/', indexRouter);
 
 // Conexión BD + arranque del servidor
 connectDatabase()
