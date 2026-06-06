@@ -38,7 +38,8 @@ block content
               +card(pub, currentUser)
               div(class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10")
                 a(href=`/publicacion/editar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") ✏️ Editar
-                a(href=`/publicacion/eliminar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") 🗑️ Eliminar
+                form(action=`/publicacion/eliminar/${pub.id}` method="post" onsubmit="return confirm('¿Eliminar publicación?')")
+                  button(type="submit" class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") 🗑️ Eliminar
       else
         div(class="flex flex-col items-center justify-center mb-16 border border-dashed border-zinc-800 rounded-xl p-12 text-center")
           p(class="text-gray-400 mb-4") Todavía no subiste ninguna foto

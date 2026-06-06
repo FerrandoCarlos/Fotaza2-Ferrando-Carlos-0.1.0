@@ -20,17 +20,7 @@ const schemaPublicacion = z.object({
   mimeType: z.string().min(1),
   licencia_id: z.coerce.number().int().positive(),
   marca_agua_texto: z.string().max(100).optional(),
-  etiquetas: z
-    .union([
-      z.array(z.coerce.number().int()),
-      z.coerce
-        .number()
-        .int()
-        .transform((v) => [v]),
-      z.string().transform((v) => [parseInt(v)]),
-    ])
-    .optional()
-    .default([]),
+  etiquetasTexto: z.string().optional().default(''),
 });
 
 /**
@@ -44,6 +34,32 @@ async function getDatosFormulario() {
     Etiqueta.findAll(),
   ]);
   return { licencias, etiquetas };
+}
+/**
+ * @function procesarEtiquetas
+ * @description Crea etiquetas si no existen y retorna los registros para bulkCreate.
+ * @param {string} etiquetasTexto - Etiquetas separadas por coma
+ * @param {number} publicacion_id - ID de la publicación
+ * @returns {Promise<void>}
+ */
+async function procesarEtiquetas(etiquetasTexto, publicacion_id) {
+  const nombres = etiquetasTexto
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter((e) => e.length > 0);
+
+  if (nombres.length === 0) return;
+
+  const etiquetasCreadas = await Promise.all(
+    nombres.map((nombre) => Etiqueta.findOrCreate({ where: { nombre } }))
+  );
+
+  await PublicacionEtiqueta.bulkCreate(
+    etiquetasCreadas.map(([etiqueta]) => ({
+      publicacion_id,
+      etiqueta_id: etiqueta.id,
+    }))
+  );
 }
 /**
  * @function mostrarFormulario
@@ -65,6 +81,7 @@ export async function mostrarFormulario(req, res) {
     res.redirect('/');
   }
 }
+
 /**
  * @function crear
  * @description Procesa la creación de una nueva publicación con su imagen.
@@ -117,14 +134,8 @@ export async function crear(req, res) {
       marca_agua_texto:
         licencia.tiene_copyright && marca_agua_texto ? marca_agua_texto : null,
     });
-    // Asociar etiquetas si se seleccionaron
-    if (etiquetas.length > 0) {
-      const registros = etiquetas.map((etiqueta_id) => ({
-        publicacion_id: publicacion.id,
-        etiqueta_id,
-      }));
-      await PublicacionEtiqueta.bulkCreate(registros);
-    }
+
+    await procesarEtiquetas(etiquetasTexto, publicacion.id);
 
     res.redirect('/');
   } catch (error) {
@@ -140,5 +151,118 @@ export async function crear(req, res) {
       },
       formValues: req.body,
     });
+  }
+}
+/**
+ * @function mostrarEditar
+ * @description Muestra el formulario de edición de una publicación.
+ */
+export async function mostrarEditar(req, res) {
+  try {
+    const publicacion = await Publicacion.findOne({
+      where: { id: req.params.id, usuario_id: req.session.userId },
+      include: [{ model: Imagen, as: 'Imagens' }, { model: Etiqueta }],
+    });
+
+    if (!publicacion) return res.redirect('/');
+
+    const { licencias, etiquetas } = await getDatosFormulario();
+    const etiquetasSeleccionadas = publicacion.Etiqueta.map((e) => e.id);
+
+    res.render('pages/editar-publicacion', {
+      title: 'Editar publicación',
+      publicacion,
+      licencias,
+      etiquetas,
+      etiquetasSeleccionadas,
+      alert: null,
+    });
+  } catch (error) {
+    console.error('✖️ Error al cargar edición:', error.message);
+    res.redirect('/');
+  }
+}
+/**
+ * @function editar
+ * @description Procesa la edición de una publicación existente.
+ */
+export async function editar(req, res) {
+  const resultado = schemaPublicacion.safeParse(req.body);
+
+  if (!resultado.success) {
+    const mensaje = resultado.error.issues[0]?.message ?? 'Datos inválidos';
+    const { licencias, etiquetas } = await getDatosFormulario();
+    const publicacion = await Publicacion.findByPk(req.params.id);
+    return res.render('pages/editar-publicacion', {
+      title: 'Editar publicación',
+      publicacion,
+      licencias,
+      etiquetas,
+      etiquetasSeleccionadas: [],
+      alert: { status: 'error', text: mensaje },
+    });
+  }
+
+  const {
+    titulo,
+    descripcion,
+    imgBase64,
+    mimeType,
+    licencia_id,
+    marca_agua_texto,
+    etiquetas,
+  } = resultado.data;
+
+  try {
+    const publicacion = await Publicacion.findOne({
+      where: { id: req.params.id, usuario_id: req.session.userId },
+    });
+    if (!publicacion) return res.redirect('/');
+
+    // verificar denuncias - no editar
+    if (publicacion.estado !== 'activo') {
+      return res.redirect('/');
+    }
+    await publicacion.update({ titulo, descripcion: descripcion || null });
+    // actualizar imagen
+    const licencia = await Licencia.findByPk(licencia_id);
+    await Imagen.update(
+      {
+        licencia_id,
+        datos: imgBase64,
+        mimeType: mimeType,
+        marca_agua_texto:
+          licencia.tiene_copyright && marca_agua_texto
+            ? marca_agua_texto
+            : null,
+      },
+      { where: { publicacion_id: publicacion.id } }
+    );
+    await procesarEtiquetas(etiquetasTexto, publicacion.id);
+    res.redirect('/');
+  } catch (error) {
+    console.error('✖️ Error al editar:', error.message);
+    res.redirect('/');
+  }
+}
+/**
+ * @function eliminar
+ * @description Elimina una publicación del usuario autenticado.
+ */
+export async function eliminar(req, res) {
+  try {
+    const publicacion = await Publicacion.findOne({
+      where: { id: req.params.id, usuario_id: req.session.userId },
+    });
+
+    // eliminar si no tiene denuncias activas
+    if (!publicacion || publicacion.estado !== 'activo')
+      return res.redirect('/');
+
+    await publicacion.destroy();
+    res.redirect('/');
+  } catch (error) {
+    console.error('✖️ Error al eliminar:', error.message);
+    res.redirect('/');
   }
 }
