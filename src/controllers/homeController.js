@@ -3,6 +3,7 @@ import { Imagen } from '../models/Imagen.js';
 import { Usuario } from '../models/Usuario.js';
 import { Etiqueta } from '../models/Etiqueta.js';
 import { Licencia } from '../models/Licencia.js';
+import { Op } from 'sequelize';
 
 /**
  * @fileoverview Controller de la página de inicio.
@@ -61,22 +62,59 @@ export async function detalle(req, res) {
 export async function index(req, res) {
   try {
     const currentUser = res.locals.currentUser;
+    const { search } = req.query;
+    // Condición base de la consulta
+    let condicionesMisFotos = { estado: 'activo' };
+    let condicionesOtrasFotos = { estado: 'activo' };
+    // si el usuario usó el buscador, agrego el filtro por titulo
+    if (search) {
+      const filtroBusqueda = {
+        titulo: { [Op.iLike]: `%${search}%` },
+      };
+      condicionesMisFotos = { ...condicionesMisFotos, ...filtroBusqueda };
+      condicionesOtrasFotos = { ...condicionesOtrasFotos, ...filtroBusqueda };
+    }
 
-    const publicaciones = await Publicacion.findAll({
-      where: { estado: 'activo' },
-      include: [
-        { model: Usuario, attributes: ['nombre', 'apellido'] },
-        {
-          model: Imagen,
-          include: [{ model: Licencia }],
-        },
-        { model: Etiqueta },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
+    // estructura de relaciones
+    const includeEstructura = [
+      { model: Usuario, attributes: ['nombre', 'apellido'] },
+      {
+        model: Imagen,
+        as: 'Imagens',
+        include: [{ model: Licencia }],
+      },
+      { model: Etiqueta },
+    ];
+
+    let misPublicaciones = [];
+    let otrasPublicaciones = [];
+    // Si hay sesión, separo mis publicaciones de las del resto
+    if (currentUser) {
+      condicionesMisFotos.usuario_id = currentUser.id;
+      condicionesOtrasFotos.usuario_id = { [Op.ne]: currentUser.id };
+
+      misPublicaciones = await Publicacion.findAll({
+        where: condicionesMisFotos,
+        include: includeEstructura,
+        order: [['createdAt', 'DESC']],
+      });
+
+      otrasPublicaciones = await Publicacion.findAll({
+        where: condicionesOtrasFotos,
+        include: includeEstructura,
+        order: [['createdAt', 'DESC']],
+      });
+    } else {
+      // Si no hay sesión, todova directo a otrasPublicaciones
+      otrasPublicaciones = await Publicacion.findAll({
+        where: condicionesOtrasFotos,
+        include: includeEstructura,
+        order: [['createdAt', 'DESC']],
+      });
+    }
 
     // Se muestran en carrusel solo publicaciones publicas
-    const publicacionesCarrusel = publicaciones.filter((p) => {
+    const publicacionesCarrusel = otrasPublicaciones.filter((p) => {
       return (
         p.Imagens &&
         p.Imagens.length &&
@@ -89,17 +127,21 @@ export async function index(req, res) {
 
     res.render('pages/index', {
       title: 'Inicio',
-      publicaciones,
+      misPublicaciones,
+      otrasPublicaciones,
       publicacionesCarrusel,
       etiquetas,
+      queryActual: search,
     });
   } catch (error) {
     console.error('❌ Error en home:', error.message);
     res.render('pages/index', {
       title: 'Inicio',
-      publicaciones: [],
+      misPublicaciones: [],
+      otrasPublicaciones: [],
       publicacionesCarrusel: [],
       etiquetas: [],
+      queryActual: '',
     });
   }
 }

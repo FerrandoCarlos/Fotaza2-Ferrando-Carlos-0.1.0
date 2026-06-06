@@ -28,7 +28,7 @@ const __dirname = dirname(__filename);
 app.set('view engine', 'pug');
 app.set('views', join(__dirname, 'views'));
 
-// 🚀 1. AGREGAR TRUST PROXY (Fundamental para que Render no tire las sesiones)
+// TRUST PROXY (Render no tire las sesiones)
 app.set('trust proxy', 1);
 
 // Middlewares
@@ -48,7 +48,10 @@ app.use(
 
 // Middleware de autenticación global
 app.use(authMiddleware);
-
+app.use((req, res, next) => {
+  res.locals.queryActual = req.query.search || '';
+  next();
+});
 // Rutas
 // rutas de autenticación
 app.use('/', authRoutes);

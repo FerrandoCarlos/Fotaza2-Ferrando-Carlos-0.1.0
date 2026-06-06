@@ -2,6 +2,7 @@ extends ../layout.pug
 
 block content
   include ../mixins/card.pug
+  //- Bienvenida (visitantes)
   if !currentUser
     section(class="flex flex-col items-center justify-center py-24 text-center px-4")
       div(class="flex flex-col items-center mb-6")
@@ -26,16 +27,34 @@ block content
       div(class="flex gap-4")
         a(class="bg-amber-400 text-zinc-950 font-semibold px-6 py-3 rounded-lg hover:bg-amber-300 transition-colors" href="/register") Comenzar
         a(class="border border-zinc-700 text-gray-300 px-6 py-3 rounded-lg hover:border-amber-400 hover:text-amber-400 transition-colors" href="/login") Ingresar
-
+  //- Contenido Galería
   section(class="max-w-7xl mx-auto px-8 py-12")
-    h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos recientes
-    if publicaciones && publicaciones.length
+    if currentUser
+      h2(class="text-2xl font-bold  text-amber-400 mb-6") Mis publicaciones
+      if misPublicaciones && misPublicaciones.length
+        div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16")
+          each pub in misPublicaciones
+            div(class="relative group")
+              +card(pub, currentUser)
+              div(class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10")
+                a(href=`/publicacion/editar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") ✏️ Editar
+                a(href=`/publicacion/eliminar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") 🗑️ Eliminar
+      else
+        div(class="flex flex-col items-center justify-center mb-16 border border-dashed border-zinc-800 rounded-xl p-12 text-center")
+          p(class="text-gray-400 mb-4") Todavía no subiste ninguna foto
+          a(href="/publicacion/nueva" class="bg-amber-400 text-zinc-950 font-semibold px-5 py-2.5 rounded-lg hover:bg-amber-300 transition-colors text-sm") ➕ Subir publicación
+      h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos de la comunidad
+    else
+      h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos recientes
+
+    if otrasPublicaciones && otrasPublicaciones.length
       div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6")
-        each pub in publicaciones
+        each pub in otrasPublicaciones
           +card(pub,currentUser)
     else
       p(class="text-gray-500 text-center py-12") No hay publicaciones todavía
 
+  //- Etiquetas
   section(class="max-w-7xl mx-auto px-8 py-8 border-t border-zinc-800")
     h2(class="text-xl font-bold text-gray-100 mb-4") Explorar por etiquetas
     if etiquetas && etiquetas.length
