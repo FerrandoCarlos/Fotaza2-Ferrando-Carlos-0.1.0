@@ -6,13 +6,13 @@ block content
   section(class="max-w-4xl mx-auto px-8 py-12")
     if publicacion.Imagens && publicacion.Imagens.length
       figure(class="relative mb-8 rounded-xl overflow-hidden")
-        if publicacion.Imagens[0].Licencium && publicacion.Imagens[0].Licencium.tiene_copyright
-          img(class="w-full max-h-96 object-cover blur-sm" src=publicacion.Imagens[0].datos alt=publicacion.titulo)
+        if publicacion.Imagens[0].Licencium && publicacion.Imagens[0].Licencium.tiene_copyright && !currentUser
+          img(class="w-full max-h-96 object-cover blur-sm" src=`/imagen/${publicacion.Imagens[0].id}` alt=publicacion.titulo)
           div(class="absolute inset-0 flex flex-col items-center justify-center gap-2")
             span(class="text-amber-400 text-6xl") 🔒
             p(class="text-white text-sm") Contenido con copyright
         else
-          img(class="w-full max-h-96 object-cover" src=publicacion.Imagens[0].datos alt=publicacion.titulo)
+          img(class="w-full max-h-96 object-cover" src=`/imagen/${publicacion.Imagens[0].id}` alt=publicacion.titulo)
 
       div(class="mb-6")
         h1(class="text-3xl font-bold text-gray-100 mb-2")= publicacion.titulo

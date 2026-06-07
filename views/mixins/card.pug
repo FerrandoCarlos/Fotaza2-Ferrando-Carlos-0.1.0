@@ -4,11 +4,11 @@ mixin card(pub,currentUser)
       if pub.Imagens && pub.Imagens.length
         figure(class="relative")
           if pub.Imagens[0].Licencium && pub.Imagens[0].Licencium.tiene_copyright && !currentUser
-            img(class="w-full h-48 object-cover blur-sm" src=pub.Imagens[0].datos alt=pub.titulo)
+            img(class="w-full h-48 object-cover blur-sm" src=`/imagen/${pub.Imagens[0].id}` alt=pub.titulo)
             div(class="absolute inset-0 flex items-center justify-center")
               span(class="text-amber-400 text-4xl") 🔒
           else
-            img(class="w-full h-48 object-cover" src=`data:${pub.Imagens[0].mimeType};base64,${pub.Imagens[0].datos}` alt=pub.titulo)
+            img(class="w-full h-48 object-cover" src=`/imagen/${pub.Imagens[0].id}` alt=pub.titulo)
       else
         div(class="w-full h-48 bg-zinc-800 flex items-center justify-center")
           span(class="text-gray-600") Sin imagen
