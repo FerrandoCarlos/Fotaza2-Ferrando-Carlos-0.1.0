@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400">
+  <rect width="680" height="400" fill="#18181b"/>
+  <circle cx="340" cy="170" r="60" fill="#3f3f46"/>
+  <rect x="310" y="155" width="60" height="50" rx="6" fill="#fbbf24"/>
+  <rect x="322" y="140" width="36" height="28" rx="18" fill="none" stroke="#fbbf24" stroke-width="7"/>
+  <circle cx="340" cy="183" r="5" fill="#18181b"/>
+  <rect x="337" y="183" width="6" height="10" rx="3" fill="#18181b"/>
+  <text x="340" y="265" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa">Contenido protegido</text>
+  <text x="340" y="295" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#71717a">Iniciá sesión para ver esta imagen</text>
+</svg>
