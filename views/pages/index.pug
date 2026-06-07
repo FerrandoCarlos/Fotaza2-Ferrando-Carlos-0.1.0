@@ -48,6 +48,12 @@ block content
     else
       h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos recientes
 
+    if queryActual
+      p(class="text-gray-400 text-sm mb-6")
+        | Resultados para:
+        span(class="text-amber-400 font-semibold") #{queryActual}
+        a(class="ml-3 text-gray-600 hover:text-gray-400 text-xs" href="/") ✕ Limpiar
+
     if otrasPublicaciones && otrasPublicaciones.length
       div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6")
         each pub in otrasPublicaciones

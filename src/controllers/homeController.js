@@ -69,7 +69,11 @@ export async function index(req, res) {
     // si el usuario usó el buscador, agrego el filtro por titulo
     if (search) {
       const filtroBusqueda = {
-        titulo: { [Op.iLike]: `%${search}%` },
+        [Op.or]: [
+          { titulo: { [Op.iLike]: `%${search}%` } },
+          { descripcion: { [Op.iLike]: `%${search}%` } },
+          { '$Etiqueta.nombre$': { [Op.iLike]: `%${search}%` } },
+        ],
       };
       condicionesMisFotos = { ...condicionesMisFotos, ...filtroBusqueda };
       condicionesOtrasFotos = { ...condicionesOtrasFotos, ...filtroBusqueda };
@@ -97,15 +101,17 @@ export async function index(req, res) {
         where: condicionesMisFotos,
         include: includeEstructura,
         order: [['createdAt', 'DESC']],
+        subQuery: false,
       });
 
       otrasPublicaciones = await Publicacion.findAll({
         where: condicionesOtrasFotos,
         include: includeEstructura,
         order: [['createdAt', 'DESC']],
+        subQuery: false,
       });
     } else {
-      // Si no hay sesión, todova directo a otrasPublicaciones
+      // Si no hay sesión, todo va directo a otrasPublicaciones
       otrasPublicaciones = await Publicacion.findAll({
         where: condicionesOtrasFotos,
         include: includeEstructura,
