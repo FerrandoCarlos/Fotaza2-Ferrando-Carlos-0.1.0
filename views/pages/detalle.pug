@@ -30,7 +30,33 @@ block content
       div(class="flex flex-wrap gap-2 mb-8")
         each etiqueta in publicacion.Etiqueta
           span(class="bg-zinc-800 text-gray-300 px-3 py-1 rounded-full text-sm") # #{etiqueta.nombre}
-
+    //- Valoraciones
+    if currentUser && publicacion.usuario_id !== currentUser.id
+      div(class="mt-8 bg-zinc-900 rounded-xl p-6 border border-zinc-800")
+        h3(class="text-gray-400 text-sm font-semibold uppercase mb-4") Valorar esta imagen
+        form(action=`/publicacion/${publicacion.id}/valorar` method="POST")
+          input(type="hidden" name="imagen_id" value=publicacion.Imagens[0].id)
+          div(class="flex gap-2 mb-4")
+            each estrella in [1,2,3,4,5]
+              label(class="cursor-pointer")
+                input(
+                  type="radio"
+                  name="valor"
+                  value=estrella
+                  class="hidden peer"
+              )
+              span(class="text-3xl peer-checked:text-amber-400 text-zinc-600 hover:text-amber-300 transition-colors") ★
+          button(type="submit" class="bg-amber-400 text-zinc-950 font-semibold px-5 py-2 rounded-lg hover:bg-amber-300 transition-colors text-sm") Enviar valoración
+    //- Promedio visible para todos
+    if publicacion.Imagens[0].Valoracions && publicacion.Imagens[0].Valoracions.length
+      - const votos = publicacion.Imagens[0].Valoracions
+      - const promedio = (votos.reduce((a, v) => a + v.valor, 0) / votos.length).toFixed(1)
+      div(class="mt-4 flex items-center gap-2")
+        span(class="text-amber-400 text-xl") ★
+        span(class="text-gray-100 font-bold text-xl") #{promedio}
+        span(class="text-gray-500 text-sm") (#{votos.length} valoracion#{votos.length !== 1 ? 'es' : ''})
+    else
+      p(class="text-gray-600 text-sm mt-4") Sin valoraciones aún
     //- Comentarios
     section(class="border-t border-zinc-800 pt-8 mt-8")
       h2(class="text-xl font-bold text-gray-100 mb-6") Comentarios

@@ -7,6 +7,7 @@ import {
   eliminar,
 } from '../controllers/publicacionController.js';
 import { requireAuth } from '../middlewares/auth.js';
+import { valorar } from '../controllers/valoracionController.js';
 
 /**
  * @fileoverview Rutas de publicaciones.
@@ -39,8 +40,15 @@ router.post('/publicacion/editar/:id', requireAuth, editar);
 router.post('/publicacion/eliminar/:id', requireAuth, eliminar);
 
 /**
+ * @route POST /publicacion/:id/valorar
+ * @description Procesa la valoración de una publicación específica.
+ */
+router.post('/publicacion/:id/valorar', requireAuth, valorar);
+
+/**
  * @route POST /publicacion
  * @description Procesa la creación de una nueva publicación.
  */
 router.post('/publicacion', requireAuth, crear);
+
 export default router;

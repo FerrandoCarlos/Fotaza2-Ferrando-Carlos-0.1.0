@@ -4,7 +4,10 @@ import { Usuario } from '../models/Usuario.js';
 import { Etiqueta } from '../models/Etiqueta.js';
 import { Licencia } from '../models/Licencia.js';
 import { Comentario } from '../models/Comentario.js';
+import { Valoracion } from '../models/Valoracion.js';
 import { Op } from 'sequelize';
+import sequelize from '../../config/db.js';
+
 /**
  * @fileoverview Controller de la página de inicio.
  * @module controllers/homeController
@@ -26,7 +29,14 @@ export async function detalle(req, res) {
         {
           model: Imagen,
           as: 'Imagens',
-          include: [{ model: Licencia }],
+          include: [
+            { model: Licencia },
+            {
+              model: Valoracion,
+              as: 'Valoracions',
+              attributes: ['usuario_id', 'valor'],
+            },
+          ],
         },
         { model: Etiqueta },
         {
@@ -97,7 +107,10 @@ export async function index(req, res) {
       {
         model: Imagen,
         as: 'Imagens',
-        include: [{ model: Licencia }],
+        include: [
+          { model: Licencia },
+          { model: Valoracion, as: 'Valoracions', attributes: ['valor'] },
+        ],
       },
       { model: Etiqueta },
     ];
@@ -131,6 +144,30 @@ export async function index(req, res) {
       });
     }
 
+    const destacadas = otrasPublicaciones.filter((p) => {
+      const votos = p.Imagens.flatMap((img) => img.Valoracions || []);
+      const cantidad = votos.length;
+      if (cantidad < 3) return false;
+      const promedio = votos.reduce((acc, v) => acc + v.valor, 0) / cantidad;
+      return promedio >= 4;
+    });
+
+    const resto = otrasPublicaciones.filter((p) => {
+      const votos = p.Imagens.flatMap((img) => img.Valoracions || []);
+      const cantidad = votos.length;
+      if (cantidad < 3) return true;
+      const promedio = votos.reduce((acc, v) => acc + v.valor, 0) / cantidad;
+      return promedio < 4;
+    });
+
+    // 70% destacadas + 30% resto, intercaladas
+    const totalDestacadas = Math.ceil(otrasPublicaciones.length * 0.7);
+    const totalResto = otrasPublicaciones.length - totalDestacadas;
+
+    otrasPublicaciones = [
+      ...destacadas.slice(0, totalDestacadas),
+      ...resto.slice(0, totalResto),
+    ];
     // Se muestran en carrusel solo publicaciones publicas
     const publicacionesCarrusel = otrasPublicaciones.filter((p) => {
       return (
