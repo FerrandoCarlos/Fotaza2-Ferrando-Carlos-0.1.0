@@ -12,6 +12,7 @@
     }
   ],
   "git": {
+    "productionBranch": "prod",
     "deploymentEnabled": {
       "main": false,
       "prod": true
