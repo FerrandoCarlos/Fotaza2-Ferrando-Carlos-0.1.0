@@ -3,8 +3,8 @@ import { Imagen } from '../models/Imagen.js';
 import { Usuario } from '../models/Usuario.js';
 import { Etiqueta } from '../models/Etiqueta.js';
 import { Licencia } from '../models/Licencia.js';
+import { Comentario } from '../models/Comentario.js';
 import { Op } from 'sequelize';
-
 /**
  * @fileoverview Controller de la página de inicio.
  * @module controllers/homeController
@@ -29,6 +29,17 @@ export async function detalle(req, res) {
           include: [{ model: Licencia }],
         },
         { model: Etiqueta },
+        {
+          model: Comentario,
+          required: false,
+          paranoid: false,
+          include: [
+            {
+              model: Usuario,
+              attributes: ['nombre', 'apellido', 'avatar_url'],
+            },
+          ],
+        },
       ],
     });
 
@@ -49,6 +60,7 @@ export async function detalle(req, res) {
     });
   } catch (error) {
     console.error('✖️ Error en detalle: ', error.message);
+    console.error(error.stack);
     res.redirect('/');
   }
 }

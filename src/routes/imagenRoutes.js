@@ -64,6 +64,7 @@ router.get('/imagen/:id', async (req, res) => {
         .toBuffer();
 
       res.set('Content-Type', 'image/jpeg');
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.send(imagenConMarca);
     }
     // Usuario logueado → imagen original

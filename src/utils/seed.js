@@ -7,7 +7,9 @@ import { Etiqueta } from '../models/Etiqueta.js';
 import { Publicacion } from '../models/Publicacion.js';
 import { Imagen } from '../models/Imagen.js';
 import { PublicacionEtiqueta } from '../models/PublicacionEtiqueta.js';
-
+import { Comentario } from '../models/Comentario.js';
+import { Valoracion } from '../models/Valoracion.js';
+import { Seguimiento } from '../models/Seguimiento.js';
 /**
  * @fileoverview Seed de datos de prueba.
  * Ejecutar con: npm run seed
@@ -47,7 +49,7 @@ async function seed() {
   await connectDatabase();
 
   await sequelize.query(
-    'TRUNCATE TABLE publicacion_etiquetas, imagenes, publicaciones, etiquetas, licencias, usuario_roles, sesiones, usuarios, roles RESTART IDENTITY CASCADE'
+    'TRUNCATE TABLE publicacion_etiquetas, imagenes, publicaciones, comentarios, valoraciones, seguimientos, etiquetas, licencias, usuario_roles, sesiones, usuarios, roles RESTART IDENTITY CASCADE'
   );
 
   // Roles
@@ -302,6 +304,63 @@ async function seed() {
     { publicacion_id: publicaciones[6].id, etiqueta_id: etiquetas[1].id },
     { publicacion_id: publicaciones[7].id, etiqueta_id: etiquetas[5].id },
     { publicacion_id: publicaciones[8].id, etiqueta_id: etiquetas[4].id },
+  ]);
+
+  // Comentarios
+  await Comentario.bulkCreate([
+    {
+      publicacion_id: publicaciones[1].id,
+      usuario_id: usuarios[0].id,
+      contenido: 'Increíble captura, los detalles son impresionantes.',
+    },
+    {
+      publicacion_id: publicaciones[1].id,
+      usuario_id: usuarios[2].id,
+      contenido: 'Me encanta la composición urbana.',
+    },
+    {
+      publicacion_id: publicaciones[0].id,
+      usuario_id: usuarios[1].id,
+      contenido: 'Qué hermoso atardecer, me recuerda a Córdoba.',
+    },
+    {
+      publicacion_id: publicaciones[3].id,
+      usuario_id: usuarios[2].id,
+      contenido: 'La Patagonia siempre sorprende.',
+    },
+    {
+      publicacion_id: publicaciones[5].id,
+      usuario_id: usuarios[0].id,
+      contenido: 'Foto increíble, el leopardo está perfecto.',
+    },
+    {
+      publicacion_id: publicaciones[6].id,
+      usuario_id: usuarios[1].id,
+      contenido: 'Gran ojo para los autos clásicos.',
+    },
+  ]);
+
+  // Valoraciones (no puede valorar el autor de la publicación)
+  await Valoracion.bulkCreate([
+    { imagen_id: 1, usuario_id: usuarios[1].id, valor: 5 }, // Ana valora foto de Carlos
+    { imagen_id: 1, usuario_id: usuarios[2].id, valor: 4 }, // Luis valora foto de Carlos
+    { imagen_id: 1, usuario_id: usuarios[3].id, valor: 5 }, // Mariano valora foto de Carlos
+    { imagen_id: 2, usuario_id: usuarios[0].id, valor: 4 }, // Carlos valora foto de Ana
+    { imagen_id: 2, usuario_id: usuarios[2].id, valor: 5 }, // Luis valora foto de Ana
+    { imagen_id: 2, usuario_id: usuarios[3].id, valor: 4 }, // Mariano valora foto de Ana
+    { imagen_id: 3, usuario_id: usuarios[0].id, valor: 3 }, // Carlos valora foto de Luis
+    { imagen_id: 3, usuario_id: usuarios[1].id, valor: 4 }, // Ana valora foto de Luis
+    { imagen_id: 5, usuario_id: usuarios[0].id, valor: 5 }, // Carlos valora foto de Ana (macro)
+    { imagen_id: 6, usuario_id: usuarios[1].id, valor: 4 }, // Ana valora foto de Luis (fauna)
+  ]);
+
+  // Seguimientos
+  await Seguimiento.bulkCreate([
+    { seguidor_id: usuarios[0].id, seguido_id: usuarios[1].id }, // Carlos sigue a Ana
+    { seguidor_id: usuarios[0].id, seguido_id: usuarios[2].id }, // Carlos sigue a Luis
+    { seguidor_id: usuarios[1].id, seguido_id: usuarios[0].id }, // Ana sigue a Carlos
+    { seguidor_id: usuarios[2].id, seguido_id: usuarios[0].id }, // Luis sigue a Carlos
+    { seguidor_id: usuarios[3].id, seguido_id: usuarios[1].id }, // Mariano sigue a Ana
   ]);
 
   const count = await Usuario.count();

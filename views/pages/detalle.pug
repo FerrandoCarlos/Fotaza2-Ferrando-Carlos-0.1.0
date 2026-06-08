@@ -4,6 +4,7 @@ block content
   include ../mixins/button.pug
 
   section(class="max-w-4xl mx-auto px-8 py-12")
+
     if publicacion.Imagens && publicacion.Imagens.length
       figure(class="relative mb-8 rounded-xl overflow-hidden")
         if publicacion.Imagens[0].Licencium && publicacion.Imagens[0].Licencium.tiene_copyright && !currentUser
@@ -14,20 +15,72 @@ block content
         else
           img(class="w-full max-h-96 object-cover" src=`/imagen/${publicacion.Imagens[0].id}` alt=publicacion.titulo)
 
-      div(class="mb-6")
-        h1(class="text-3xl font-bold text-gray-100 mb-2")= publicacion.titulo
-        p(class="text-gray-500 text-sm")
-          | Por
-          span(class="text-amber-400 p-1") #{publicacion.Usuario ? publicacion.Usuario.nombre + ' ' + publicacion.Usuario.apellido : 'Anónimo'}
-          | ·
-          time #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
+    div(class="mb-6")
+      h1(class="text-3xl font-bold text-gray-100 mb-2")= publicacion.titulo
+      p(class="text-gray-500 text-sm")
+        | Por
+        span(class="text-amber-400 p-1") #{publicacion.Usuario ? publicacion.Usuario.nombre + ' ' + publicacion.Usuario.apellido : 'Anónimo'}
+        | ·
+        time #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
 
-      if publicacion.descripcion
-        p(class="text-gray-400 mb-6 leading-relaxed") #{publicacion.descripcion}
+    if publicacion.descripcion
+      p(class="text-gray-400 mb-6 leading-relaxed") #{publicacion.descripcion}
 
-      if publicacion.Etiqueta && publicacion.Etiqueta.length
-        div(class="flex flex-wrap gap-2 mb-8")
-          each etiqueta in publicacion.Etiqueta
-            span(class="bg-zinc-800 text-gray-300 px-3 py-1 rounded-full text-sm") # #{etiqueta.nombre}
+    if publicacion.Etiqueta && publicacion.Etiqueta.length
+      div(class="flex flex-wrap gap-2 mb-8")
+        each etiqueta in publicacion.Etiqueta
+          span(class="bg-zinc-800 text-gray-300 px-3 py-1 rounded-full text-sm") # #{etiqueta.nombre}
+
+    //- Comentarios
+    section(class="border-t border-zinc-800 pt-8 mt-8")
+      h2(class="text-xl font-bold text-gray-100 mb-6") Comentarios
+        if publicacion.Comentarios && publicacion.Comentarios.length
+          span(class="ml-2 text-sm text-gray-500 font-normal") #{publicacion.Comentarios.length}
+      //- Formulario para logueados
+      if currentUser && !publicacion.comentarios_cerrados
+        form(action="/comentario" method="post" class="mb-8 flex gap-3 items-start")
+          input(type="hidden" name="publicacion_id" value=publicacion.id)
+          if currentUser.avatar_url
+            img(class="w-9 h-9 rounded-full object-cover shrink-0" src=currentUser.avatar_url)
+          else
+            span(class="w-9 h-9 rounded-full bg-amber-400 text-zinc-950 text-xs font-bold flex items-center justify-center shrink-0") #{currentUser.nombre[0].toUpperCase()}#{currentUser.apellido[0].toUpperCase()}
+          div(class="flex-1 flex gap-2")
+            textarea(
+              name="contenido"
+              placeholder="Escribí un comentario..."
+              rows="2"
+              maxlength="1000"
+              class="flex-1 bg-zinc-800 border border-zinc-700 text-gray-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-amber-400 resize-none"
+            )
+            button(type="submit" class="bg-amber-400 text-zinc-950 font-semibold px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors text-sm self-end shrink-0") Comentar
+
+      else if !currentUser
+        p(class="text-gray-500 text-sm mb-6")
+          a(class="text-amber-400 hover:underline mr-1" href="/login") Inicia sesión
+          | para comentar
+
+      //- Lista de comentarios
+      if publicacion.Comentarios && publicacion.Comentarios.length
+        div(class="flex flex-col gap-4")
+          each comentario in publicacion.Comentarios
+            div(class="flex gap-3 items-start")
+              if comentario.Usuario && comentario.Usuario.avatar_url
+                img(class="w-8 h-8 rounded-full object-cover shrink-0" src=comentario.Usuario.avatar_url)
+              else
+                span(class="w-8 h-8 rounded-full bg-zinc-700 text-gray-300 text-xs font-bold flex items-center justify-center shrink-0")
+                  | #{comentario.Usuario && comentario.Usuario.nombre ? comentario.Usuario.nombre[0].toUpperCase() : '?'}
+              div(class="flex-1 bg-zinc-900 rounded-lg px-4 py-3")
+                div(class="flex items-center justify-between mb-1")
+                  span(class="text-amber-400 text-sm font-semibold")
+                    | #{comentario.Usuario ? comentario.Usuario.nombre + ' ' + comentario.Usuario.apellido : 'Usuario eliminado'}
+                  div(class="flex items-center gap-3")
+                    time(class="text-gray-600 text-xs") #{new Date(comentario.createdAt).toLocaleDateString('es-AR')}
+                    if currentUser && currentUser.id === comentario.usuario_id
+                      form(action=`/comentario/eliminar/${comentario.id}` method="POST" class="inline")
+                        button(type="submit" class="text-gray-600 hover:text-red-400 text-xs transition-colors") 🗑️
+                p(class="text-gray-300 text-sm") #{comentario.contenido}
+
+      else
+        p(class="text-gray-500 text-sm") Sin comentarios todavía. ¡Sé el primero!
 
     a(class="text-amber-400 hover:underline text-sm" href="/") ← Volver al inicio

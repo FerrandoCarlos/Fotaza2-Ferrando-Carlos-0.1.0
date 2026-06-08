@@ -41,6 +41,11 @@ Comentario.init(
         key: 'id',
       },
     },
+    contenido: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: '',
+    },
   },
   {
     sequelize,
