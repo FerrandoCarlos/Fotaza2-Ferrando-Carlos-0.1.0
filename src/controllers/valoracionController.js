@@ -16,7 +16,8 @@ import { Imagen } from '../models/Imagen.js';
 export async function valorar(req, res) {
   try {
     const { id } = req.params;
-    const { imagen_id, valor } = req.body;
+    const { valor } = req.body;
+    const imagen_id = parseInt(req.body.imagen_id);
     const usuario_id = req.session.userId;
 
     const valorNum = parseInt(valor);
@@ -37,7 +38,7 @@ export async function valorar(req, res) {
     });
 
     if (!creada) {
-      await valoracion.update({ valor: valorNum });
+      return res.redirect(`/publicacion/${id}`);
     }
     res.redirect(`/publicacion/${id}`);
   } catch (error) {

@@ -38,14 +38,14 @@ block content
           input(type="hidden" name="imagen_id" value=publicacion.Imagens[0].id)
           div(class="flex gap-2 mb-4")
             each estrella in [1,2,3,4,5]
-              label(class="cursor-pointer")
+              label(class="estrella-label cursor-pointer text-3xl text-zinc-600 hover:text-amber-300 transition-colors")
                 input(
                   type="radio"
                   name="valor"
                   value=estrella
-                  class="hidden peer"
-              )
-              span(class="text-3xl peer-checked:text-amber-400 text-zinc-600 hover:text-amber-300 transition-colors") ★
+                  class="estrella-input hidden"
+                )
+                | ★
           button(type="submit" class="bg-amber-400 text-zinc-950 font-semibold px-5 py-2 rounded-lg hover:bg-amber-300 transition-colors text-sm") Enviar valoración
     //- Promedio visible para todos
     if publicacion.Imagens[0].Valoracions && publicacion.Imagens[0].Valoracions.length
@@ -110,3 +110,4 @@ block content
         p(class="text-gray-500 text-sm") Sin comentarios todavía. ¡Sé el primero!
 
     a(class="text-amber-400 hover:underline text-sm" href="/") ← Volver al inicio
+  script(src="/js/valoracion.js")
