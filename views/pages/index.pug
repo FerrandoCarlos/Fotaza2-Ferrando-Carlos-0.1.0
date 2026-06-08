@@ -5,7 +5,7 @@ block content
   //- Bienvenida (visitantes)
   if !currentUser
     section(class="flex flex-col items-center justify-center py-24 text-center px-4")
-      div(class="flex flex-col items-center mb-6")
+      div(class="flex flex-col items-center mb-3")
         h1#hero-title(class="text-4xl font-bold text-amber-400") Bienvenido a
         img(class="h-40 w-auto" src="/img/logoMain.png" alt="Logo Fotaza 2")
       //- Carrusel
@@ -14,7 +14,7 @@ block content
           each pub in publicacionesCarrusel.slice(0,5)
             if pub.Imagens && pub.Imagens.length
               div(class="min-w-full h-64 relative shrink-0")
-                img(class="w-full h-full object-cover" src=`data:${pub.Imagens[0].mimeType};base64,${pub.Imagens[0].datos}` alt=pub.titulo)
+                img(class="w-full h-full object-cover" src=`/imagen/${pub.Imagens[0].id}` alt=pub.titulo)
                 div(class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-4")
                   p(class="text-white font-semibold text-sm")  #{pub.titulo}
                   p(class="text-gray-300 text-xs") #{pub.Usuario ? pub.Usuario.nombre + ''+ pub.Usuario.apellido : ''}
@@ -23,12 +23,10 @@ block content
         each pub, i in publicacionesCarrusel.slice(0,5)
           if pub.Imagens && pub.Imagens.length
             button(class="w-2 h-2 rounded-full bg-zinc-600 hover:bg-amber-400 transition-colors carrusel-dot" data-index=i)
-      p(class="text-gray-400 text-xl mb-10 max-w-xl mt-2") Compartí y descubrí fotografías increíbles de la comunidad
-      div(class="flex gap-4")
-        a(class="bg-amber-400 text-zinc-950 font-semibold px-6 py-3 rounded-lg hover:bg-amber-300 transition-colors" href="/register") Comenzar
-        a(class="border border-zinc-700 text-gray-300 px-6 py-3 rounded-lg hover:border-amber-400 hover:text-amber-400 transition-colors" href="/login") Ingresar
+      p(class="text-gray-400 text-xl mb-1 max-w-xl mt-2") Compartí y descubrí fotografías increíbles de la comunidad
+
   //- Contenido Galería
-  section(class="max-w-7xl mx-auto px-8 py-12")
+  section(class="max-w-7xl mx-auto px-8 py-10")
     if currentUser
       h2(class="text-2xl font-bold  text-amber-400 mb-6") Mis publicaciones
       if misPublicaciones && misPublicaciones.length
@@ -38,7 +36,8 @@ block content
               +card(pub, currentUser)
               div(class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10")
                 a(href=`/publicacion/editar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") ✏️ Editar
-                a(href=`/publicacion/eliminar/${pub.id}` class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") 🗑️ Eliminar
+                form(action=`/publicacion/eliminar/${pub.id}` method="post" onsubmit="return confirm('¿Eliminar publicación?')")
+                  button(type="submit" class="p-2 bg-zinc-900/90 hover:bg-amber-400 text-gray-400 hover:text-zinc-950 rounded-lg text-xs border border-zinc-700 transition-colors") 🗑️ Eliminar
       else
         div(class="flex flex-col items-center justify-center mb-16 border border-dashed border-zinc-800 rounded-xl p-12 text-center")
           p(class="text-gray-400 mb-4") Todavía no subiste ninguna foto
@@ -46,6 +45,12 @@ block content
       h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos de la comunidad
     else
       h2(class="text-2xl font-bold text-gray-100 mb-8") Fotos recientes
+
+    if queryActual
+      p(class="text-gray-400 text-sm mb-6")
+        | Resultados para:
+        span(class="text-amber-400 font-semibold") #{queryActual}
+        a(class="ml-3 text-gray-600 hover:text-gray-400 text-xs" href="/") ✕ Limpiar
 
     if otrasPublicaciones && otrasPublicaciones.length
       div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6")

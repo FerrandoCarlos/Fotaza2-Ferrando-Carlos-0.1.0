@@ -8,6 +8,8 @@ import { authMiddleware } from './src/middlewares/auth.js';
 import indexRouter from './src/routes/index.js';
 import authRoutes from './src/routes/authRoutes.js';
 import publicacionRoutes from './src/routes/publicacionRoutes.js';
+import imagenRoutes from './src/routes/imagenRoutes.js';
+import comentarioRoutes from './src/routes/comentarioRoutes.js';
 
 dotenv.config();
 
@@ -53,12 +55,16 @@ app.use((req, res, next) => {
   next();
 });
 // Rutas
-// rutas de autenticación
+// ruta de autenticación
 app.use('/', authRoutes);
-// rutas de publicaciones
+// ruta de publicaciones
 app.use('/', publicacionRoutes);
-// rutas de index
+// ruta de index
 app.use('/', indexRouter);
+// ruta de imagenes
+app.use('/', imagenRoutes);
+// Ruta de comentarios
+app.use('/', comentarioRoutes);
 
 // Conexión BD + arranque del servidor
 connectDatabase()
