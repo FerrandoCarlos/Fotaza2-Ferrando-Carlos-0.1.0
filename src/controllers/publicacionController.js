@@ -134,7 +134,7 @@ export async function crear(req, res) {
     mimeType,
     licencia_id,
     marca_agua_texto,
-    etiquetasTexto,
+    etiquetasTexto = '',
   } = resultado.data;
 
   try {
@@ -259,7 +259,7 @@ export async function editar(req, res) {
     mimeType,
     licencia_id,
     marca_agua_texto,
-    etiquetasTexto,
+    etiquetasTexto = '',
   } = resultado.data;
 
   try {
