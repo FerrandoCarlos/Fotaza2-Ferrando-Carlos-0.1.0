@@ -17,10 +17,10 @@ export async function valorar(req, res) {
   try {
     const { id } = req.params;
     const { valor } = req.body;
-    const imagen_id = parseInt(req.body.imagen_id);
+    const imagen_id = parseInt(req.body.imagen_id, 10);
     const usuario_id = req.session.userId;
 
-    const valorNum = parseInt(valor);
+    const valorNum = parseInt(valor, 10);
     if (!valorNum || valorNum < 1 || valorNum > 5) {
       //que pasaría con 0
       return res.redirect(`/publicacion/${id}`);

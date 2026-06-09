@@ -67,8 +67,8 @@ async function procesarEtiquetas(etiquetasTexto, publicacion_id) {
   const idsExistentes = relacionesExistentes.map((r) => r.etiqueta.id);
 
   const nuevasRelaciones = resultados
-    .map((resultado) => resultado[0]) // Nos quedamos con la instancia de la etiqueta
-    .filter((etiqueta) => !idsExistentes.includes(etiqueta.id)) // 👈 EVITA DUPLICADOS: Si ya existe, no la agrega
+    .map((resultado) => resultado[0])
+    .filter((etiqueta) => !idsExistentes.includes(etiqueta.id))
     .map((etiqueta) => ({
       publicacion_id: Number(publicacion_id),
       etiqueta_id: Number(etiqueta.id),
