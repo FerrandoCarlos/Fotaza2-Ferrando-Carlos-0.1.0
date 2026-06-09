@@ -117,6 +117,11 @@ export async function index(req, res) {
 
     let misPublicaciones = [];
     let otrasPublicaciones = [];
+
+    const ordenEstructura = [
+      ['createdAt', 'DESC'],
+      [{ model: Imagen, as: 'Imagens' }, 'id', 'ASC'],
+    ];
     // Si hay sesión, separo mis publicaciones de las del resto
     if (currentUser) {
       condicionesMisFotos.usuario_id = currentUser.id;
@@ -125,14 +130,14 @@ export async function index(req, res) {
       misPublicaciones = await Publicacion.findAll({
         where: condicionesMisFotos,
         include: includeEstructura,
-        order: [['createdAt', 'DESC']],
+        order: ordenEstructura,
         subQuery: false,
       });
 
       otrasPublicaciones = await Publicacion.findAll({
         where: condicionesOtrasFotos,
         include: includeEstructura,
-        order: [['createdAt', 'DESC']],
+        order: ordenEstructura,
         subQuery: false,
       });
     } else {

@@ -69,7 +69,7 @@ router.get('/imagen/:id', async (req, res) => {
     }
     // Usuario logueado → imagen original
     res.set('Content-type', imagen.mime_type);
-    res.set('Cache-Control', 'public, max-age=86400'); // cache 24hs
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private'); // cache 24hs
     res.send(buffer);
   } catch (error) {
     console.error('✖️ Error al servir imagen:', error.message);

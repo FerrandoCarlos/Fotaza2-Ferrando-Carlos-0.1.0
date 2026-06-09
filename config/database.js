@@ -29,8 +29,11 @@ Usuario.hasMany(Sesion, { foreignKey: 'usuario_id' });
 Sesion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 // Publicacion e Imagen (1:N)
-Publicacion.hasMany(Imagen, { foreignKey: 'publicacion_id' });
-Imagen.belongsTo(Publicacion, { foreignKey: 'publicacion_id' });
+Publicacion.hasMany(Imagen, { foreignKey: 'publicacion_id', as: 'Imagens' });
+Imagen.belongsTo(Publicacion, {
+  foreignKey: 'publicacion_id',
+  as: 'Publicacion',
+});
 
 // Imagen y Licencia (N:1)
 Imagen.belongsTo(Licencia, { foreignKey: 'licencia_id' });
@@ -44,10 +47,12 @@ Publicacion.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 Publicacion.belongsToMany(Etiqueta, {
   through: PublicacionEtiqueta,
   foreignKey: 'publicacion_id',
+  otherKey: 'etiqueta_id',
 });
 Etiqueta.belongsToMany(Publicacion, {
   through: PublicacionEtiqueta,
   foreignKey: 'etiqueta_id',
+  otherKey: 'publicacion_id',
 });
 
 // Publicacion y Comentario (1:N)
