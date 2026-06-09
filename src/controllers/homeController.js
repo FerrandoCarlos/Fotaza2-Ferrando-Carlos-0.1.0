@@ -149,27 +149,21 @@ export async function index(req, res) {
       });
     }
 
-    const destacadas = otrasPublicaciones.filter((p) => {
-      const votos = p.Imagens.flatMap((img) => img.Valoracions || []);
-      const cantidad = votos.length;
-      if (cantidad < 3) return false;
-      const promedio = votos.reduce((acc, v) => acc + v.valor, 0) / cantidad;
-      return promedio >= 4;
+    otrasPublicaciones.sort((a, b) => {
+      // sacar el promedio de un publicación
+      const obtenerPromedio = (p) => {
+        const votos = p.Imagens?.flatMap((img) => img.Valoracions || []) || [];
+        if (votos.length === 0) return 0;
+
+        const suma = votos.reduce((acc, v) => acc + v.valor, 0);
+        return suma / votos.length;
+      };
+
+      const promedioA = obtenerPromedio(a);
+      const promedioB = obtenerPromedio(b);
+
+      return promedioB - promedioA;
     });
-
-    const resto = otrasPublicaciones.filter((p) => {
-      const votos = p.Imagens.flatMap((img) => img.Valoracions || []);
-      const cantidad = votos.length;
-      if (cantidad < 3) return true;
-      const promedio = votos.reduce((acc, v) => acc + v.valor, 0) / cantidad;
-      return promedio < 4;
-    });
-
-    // 70% destacadas + 30% resto, intercaladas
-    const totalDestacadas = Math.ceil(otrasPublicaciones.length * 0.7);
-    const totalResto = otrasPublicaciones.length - totalDestacadas;
-
-    otrasPublicaciones = [...destacadas, ...resto];
 
     // Se muestran en carrusel solo publicaciones publicas
     const publicacionesCarrusel = otrasPublicaciones.filter((p) => {
