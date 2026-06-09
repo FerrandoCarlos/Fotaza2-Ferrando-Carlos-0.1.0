@@ -117,6 +117,11 @@ export async function index(req, res) {
 
     let misPublicaciones = [];
     let otrasPublicaciones = [];
+
+    const ordenEstructura = [
+      ['createdAt', 'DESC'],
+      [{ model: Imagen, as: 'Imagens' }, 'id', 'ASC'],
+    ];
     // Si hay sesión, separo mis publicaciones de las del resto
     if (currentUser) {
       condicionesMisFotos.usuario_id = currentUser.id;
@@ -125,14 +130,14 @@ export async function index(req, res) {
       misPublicaciones = await Publicacion.findAll({
         where: condicionesMisFotos,
         include: includeEstructura,
-        order: [['createdAt', 'DESC']],
+        order: ordenEstructura,
         subQuery: false,
       });
 
       otrasPublicaciones = await Publicacion.findAll({
         where: condicionesOtrasFotos,
         include: includeEstructura,
-        order: [['createdAt', 'DESC']],
+        order: ordenEstructura,
         subQuery: false,
       });
     } else {
@@ -164,10 +169,8 @@ export async function index(req, res) {
     const totalDestacadas = Math.ceil(otrasPublicaciones.length * 0.7);
     const totalResto = otrasPublicaciones.length - totalDestacadas;
 
-    otrasPublicaciones = [
-      ...destacadas.slice(0, totalDestacadas),
-      ...resto.slice(0, totalResto),
-    ];
+    otrasPublicaciones = [...destacadas, ...resto];
+
     // Se muestran en carrusel solo publicaciones publicas
     const publicacionesCarrusel = otrasPublicaciones.filter((p) => {
       return (

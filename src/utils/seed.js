@@ -10,6 +10,7 @@ import { PublicacionEtiqueta } from '../models/PublicacionEtiqueta.js';
 import { Comentario } from '../models/Comentario.js';
 import { Valoracion } from '../models/Valoracion.js';
 import { Seguimiento } from '../models/Seguimiento.js';
+
 /**
  * @fileoverview Seed de datos de prueba.
  * Ejecutar con: npm run seed
@@ -62,13 +63,13 @@ async function seed() {
   console.log('📥 Descargando Avatares para pruebas....');
   const avatares = await Promise.all([
     avatarBase64Completo(
-      'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix'
+      'https://xsgames.co/randomusers/assets/avatars/male/51.jpg'
     ),
     avatarBase64Completo(
-      'https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka'
+      'https://xsgames.co/randomusers/assets/avatars/female/0.jpg'
     ),
     avatarBase64Completo(
-      'https://api.dicebear.com/7.x/adventurer/svg?seed=Jack'
+      'https://xsgames.co/randomusers/assets/avatars/male/0.jpg'
     ),
   ]);
   console.log('✅ Avatares descargados');
@@ -140,13 +141,14 @@ async function seed() {
     usuarios.push(nuevoUsuario);
   }
   console.log('✅ Usuarios insertados en orden perfecto');
+
   // Licencias
   const licencias = await Licencia.bulkCreate([
     { nombre: 'Sin copyright', tiene_copyright: false },
     { nombre: 'Con copyright', tiene_copyright: true },
   ]);
 
-  //  Etiquetas
+  // Etiquetas
   const etiquetas = await Etiqueta.bulkCreate([
     { nombre: 'naturaleza' },
     { nombre: 'arquitectura' },
@@ -157,22 +159,8 @@ async function seed() {
     { nombre: 'animales' },
   ]);
 
-  // Descargar Imagenes
-  console.log('📥 Descargando Imágenes estables para la Home...');
-  const imgs = await Promise.all([
-    imagenBase64Pura('https://picsum.photos/seed/naturaleza/800/600'), // 0. Atardecer en las sierras (Es una playa/costa grisácea)
-    imagenBase64Pura('https://picsum.photos/id/43/800/600'), // 1. Arquitectura urbana (Ana Gomez - Candado)
-    imagenBase64Pura('https://picsum.photos/seed/retrato/800/600'), // 2. Retrato en blanco y negro (Manos en consola)
-    imagenBase64Pura('https://picsum.photos/id/1016/800/600'), // 3. Paisaje patagónico (Montañas reales de la Patagonia)
-    imagenBase64Pura('https://picsum.photos/id/1080/800/600'), // 4. Mundo macro (Ana Gomez - Candado)
-    imagenBase64Pura('https://picsum.photos/seed/animales/800/600'), // 5. Fauna silvestre (Leopardo)
-    imagenBase64Pura('https://picsum.photos/id/111/800/600'), // 6. Nissan en la ciudad (Un auto real metido en la calle)
-    imagenBase64Pura('https://picsum.photos/id/122/800/600'), // 7. Luces de neón (Flor Carrizo - Candado)
-    imagenBase64Pura('https://picsum.photos/id/292/800/600'), // 8. Detalles gastronómicos (Un plato de comida/restaurante real)
-  ]);
-  console.log('✅ Imágenes descargadas');
-
   // Publicaciones
+  console.log('📝 Insertando publicaciones...');
   const publicaciones = await Publicacion.bulkCreate([
     {
       usuario_id: usuarios[0].id,
@@ -229,67 +217,45 @@ async function seed() {
       estado: 'activo',
     },
   ]);
+  console.log('✅ Publicaciones insertadas');
 
-  // Imagenes
-  await Imagen.bulkCreate([
-    {
-      publicacion_id: publicaciones[0].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[0].datosPuros,
-      mime_type: imgs[0].mimeType,
-    },
-    {
-      publicacion_id: publicaciones[1].id,
-      licencia_id: licencias[1].id,
-      datos: imgs[1].datosPuros,
-      mime_type: imgs[1].mimeType,
-      marca_agua_texto: '© Ana Gomez',
-    },
-    {
-      publicacion_id: publicaciones[2].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[2].datosPuros,
-      mime_type: imgs[2].mimeType,
-    },
-    {
-      publicacion_id: publicaciones[3].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[3].datosPuros,
-      mime_type: imgs[3].mimeType,
-    },
-    {
-      publicacion_id: publicaciones[4].id,
-      licencia_id: licencias[1].id,
-      datos: imgs[4].datosPuros,
-      mime_type: imgs[4].mimeType,
-      marca_agua_texto: '© Ana Gomez',
-    },
-    {
-      publicacion_id: publicaciones[5].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[5].datosPuros,
-      mime_type: imgs[5].mimeType,
-    },
-    {
-      publicacion_id: publicaciones[6].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[6].datosPuros,
-      mime_type: imgs[6].mimeType,
-    },
-    {
-      publicacion_id: publicaciones[7].id,
-      licencia_id: licencias[1].id,
-      datos: imgs[7].datosPuros,
-      mime_type: imgs[7].mimeType,
-      marca_agua_texto: '© Flor Carrizo',
-    },
-    {
-      publicacion_id: publicaciones[8].id,
-      licencia_id: licencias[0].id,
-      datos: imgs[8].datosPuros,
-      mime_type: imgs[8].mimeType,
-    },
-  ]);
+  // Descargar e Insertar Imágenes (Orden Perfecto Controlado)
+  console.log('📥 Descargando Imágenes estables para la Home...');
+  const urlsImagenes = [
+    'https://picsum.photos/seed/naturaleza/800/600',
+    'https://picsum.photos/id/43/800/600',
+    'https://picsum.photos/seed/retrato/800/600',
+    'https://picsum.photos/id/1016/800/600',
+    'https://picsum.photos/id/1080/800/600',
+    'https://picsum.photos/seed/animales/800/600',
+    'https://picsum.photos/id/111/800/600',
+    'https://picsum.photos/id/122/800/600',
+    'https://picsum.photos/id/292/800/600',
+  ];
+
+  const datosImagenesParaGuardar = [];
+
+  for (let i = 0; i < urlsImagenes.length; i++) {
+    const infoFoto = await imagenBase64Pura(urlsImagenes[i]);
+
+    let marcaAgua = null;
+    if (i === 1 || i === 4) marcaAgua = '© Ana Gomez';
+    if (i === 7) marcaAgua = '© Flor Carrizo';
+
+    const licenciaId =
+      i === 1 || i === 4 || i === 7 ? licencias[1].id : licencias[0].id;
+
+    datosImagenesParaGuardar.push({
+      publicacion_id: publicaciones[i].id,
+      licencia_id: licenciaId,
+      datos: infoFoto.datosPuros,
+      mime_type: infoFoto.mimeType,
+      marca_agua_texto: marcaAgua,
+    });
+  }
+
+  await Imagen.bulkCreate(datosImagenesParaGuardar);
+  console.log('✅ Imágenes descargadas e insertadas en orden simétrico');
 
   // Etiquetas de publicaciones
   await PublicacionEtiqueta.bulkCreate([
@@ -340,27 +306,29 @@ async function seed() {
     },
   ]);
 
-  // Valoraciones (no puede valorar el autor de la publicación)
+  // Valoraciones
+  console.log('⭐ Insertando valoraciones...');
   await Valoracion.bulkCreate([
-    { imagen_id: 1, usuario_id: usuarios[1].id, valor: 5 }, // Ana valora foto de Carlos
-    { imagen_id: 1, usuario_id: usuarios[2].id, valor: 4 }, // Luis valora foto de Carlos
-    { imagen_id: 1, usuario_id: usuarios[3].id, valor: 5 }, // Mariano valora foto de Carlos
-    { imagen_id: 2, usuario_id: usuarios[0].id, valor: 4 }, // Carlos valora foto de Ana
-    { imagen_id: 2, usuario_id: usuarios[2].id, valor: 5 }, // Luis valora foto de Ana
-    { imagen_id: 2, usuario_id: usuarios[3].id, valor: 4 }, // Mariano valora foto de Ana
-    { imagen_id: 3, usuario_id: usuarios[0].id, valor: 3 }, // Carlos valora foto de Luis
-    { imagen_id: 3, usuario_id: usuarios[1].id, valor: 4 }, // Ana valora foto de Luis
-    { imagen_id: 5, usuario_id: usuarios[0].id, valor: 5 }, // Carlos valora foto de Ana (macro)
-    { imagen_id: 6, usuario_id: usuarios[1].id, valor: 4 }, // Ana valora foto de Luis (fauna)
+    { imagen_id: 1, usuario_id: usuarios[1].id, valor: 5 },
+    { imagen_id: 1, usuario_id: usuarios[2].id, valor: 4 },
+    { imagen_id: 1, usuario_id: usuarios[3].id, valor: 5 },
+    { imagen_id: 2, usuario_id: usuarios[0].id, valor: 4 },
+    { imagen_id: 2, usuario_id: usuarios[2].id, valor: 5 },
+    { imagen_id: 2, usuario_id: usuarios[3].id, valor: 4 },
+    { imagen_id: 3, usuario_id: usuarios[0].id, valor: 3 },
+    { imagen_id: 3, usuario_id: usuarios[1].id, valor: 4 },
+    { imagen_id: 5, usuario_id: usuarios[0].id, valor: 5 },
+    { imagen_id: 6, usuario_id: usuarios[1].id, valor: 4 },
   ]);
+  console.log('✅ Valoraciones insertadas');
 
   // Seguimientos
   await Seguimiento.bulkCreate([
-    { seguidor_id: usuarios[0].id, seguido_id: usuarios[1].id }, // Carlos sigue a Ana
-    { seguidor_id: usuarios[0].id, seguido_id: usuarios[2].id }, // Carlos sigue a Luis
-    { seguidor_id: usuarios[1].id, seguido_id: usuarios[0].id }, // Ana sigue a Carlos
-    { seguidor_id: usuarios[2].id, seguido_id: usuarios[0].id }, // Luis sigue a Carlos
-    { seguidor_id: usuarios[3].id, seguido_id: usuarios[1].id }, // Mariano sigue a Ana
+    { seguidor_id: usuarios[0].id, seguido_id: usuarios[1].id },
+    { seguidor_id: usuarios[0].id, seguido_id: usuarios[2].id },
+    { seguidor_id: usuarios[1].id, seguido_id: usuarios[0].id },
+    { seguidor_id: usuarios[2].id, seguido_id: usuarios[0].id },
+    { seguidor_id: usuarios[3].id, seguido_id: usuarios[1].id },
   ]);
 
   const count = await Usuario.count();

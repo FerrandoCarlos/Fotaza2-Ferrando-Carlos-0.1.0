@@ -43,24 +43,47 @@ async function getDatosFormulario() {
  * @returns {Promise<void>}
  */
 async function procesarEtiquetas(etiquetasTexto, publicacion_id) {
-  const nombres = etiquetasTexto
-    .split(',')
-    .map((e) => e.trim().toLowerCase())
-    .filter((e) => e.length > 0);
+  if (!etiquetasTexto || typeof etiquetasTexto !== 'string') return;
 
-  if (nombres.length === 0) return;
+  const nombresUnicos = [
+    ...new Set(
+      etiquetasTexto
+        .split(',')
+        .map((e) => e.trim().toLowerCase())
+        .filter((e) => e.length > 0)
+    ),
+  ];
 
-  const etiquetasCreadas = await Promise.all(
-    nombres.map((nombre) => Etiqueta.findOrCreate({ where: { nombre } }))
+  if (nombresUnicos.length === 0) return;
+
+  const resultados = await Promise.all(
+    nombresUnicos.map((nombre) => Etiqueta.findOrCreate({ where: { nombre } }))
   );
 
-  await PublicacionEtiqueta.bulkCreate(
-    etiquetasCreadas.map(([etiqueta]) => ({
-      publicacion_id,
-      etiqueta_id: etiqueta.id,
-    }))
-  );
+  const relacionesExistentes = await PublicacionEtiqueta.findAll({
+    where: { publicacion_id: Number(publicacion_id) },
+  });
+
+  const idsExistentes = relacionesExistentes.map((r) => r.etiqueta.id);
+
+  const nuevasRelaciones = resultados
+    .map((resultado) => resultado[0]) // Nos quedamos con la instancia de la etiqueta
+    .filter((etiqueta) => !idsExistentes.includes(etiqueta.id)) // 👈 EVITA DUPLICADOS: Si ya existe, no la agrega
+    .map((etiqueta) => ({
+      publicacion_id: Number(publicacion_id),
+      etiqueta_id: Number(etiqueta.id),
+    }));
+
+  if (nuevasRelaciones.length > 0) {
+    await PublicacionEtiqueta.bulkCreate(nuevasRelaciones, {
+      ignoreDuplicates: true,
+    });
+    console.log(
+      `✔️ Se vincularon ${nuevasRelaciones.length} etiquetas nuevas.`
+    );
+  }
 }
+
 /**
  * @function mostrarFormulario
  * @description Muestra el formulario de nueva publicación.
@@ -103,6 +126,7 @@ export async function crear(req, res) {
       formValues: req.body,
     });
   }
+
   const {
     titulo,
     descripcion,
@@ -110,20 +134,36 @@ export async function crear(req, res) {
     mimeType,
     licencia_id,
     marca_agua_texto,
-    etiquetas,
+    etiquetasTexto,
   } = resultado.data;
 
   try {
+    // Verificar si el usuario realmente esta logueado
+    if (!req.session || !req.session.userId) {
+      console.error('✖️ Intento de publicación sin sesión activa.');
+      return res.redirect('/login');
+    }
     //   Verificar si la licencia tiene copy para aplicar marca de agua
     const licencia = await Licencia.findByPk(licencia_id);
     if (!licencia) {
-      throw new Error('Licencia no encontrada');
+      const { licencias, etiquetas } = await getDatosFormulario();
+      return res.render('pages/nueva-publicacion', {
+        title: 'Nueva publicación',
+        licencias,
+        etiquetas,
+        alert: {
+          status: 'error',
+          text: 'La licencia seleccionada no es válida.',
+        },
+        formValues: req.body,
+      });
     }
     // Crear publicación
     const publicacion = await Publicacion.create({
       usuario_id: req.session.userId,
       titulo,
       descripcion: descripcion || null,
+      estado: 'activo',
     });
     // Crear la imagen asociada
     await Imagen.create({
@@ -135,11 +175,20 @@ export async function crear(req, res) {
         licencia.tiene_copyright && marca_agua_texto ? marca_agua_texto : null,
     });
 
-    await procesarEtiquetas(etiquetasTexto, publicacion.id);
+    try {
+      await procesarEtiquetas(etiquetasTexto, publicacion.id);
+    } catch (tagError) {
+      console.error(
+        '⚠️ Error no crítico al procesar etiquetas:',
+        tagError.message
+      );
+    }
 
     res.redirect('/');
   } catch (error) {
     console.error('✖️ Error al crear publicacion:', error.message);
+    console.error(error.stack);
+
     const { licencias, etiquetas } = await getDatosFormulario();
     res.render('pages/nueva-publicacion', {
       title: 'Nueva publicación',
@@ -147,7 +196,7 @@ export async function crear(req, res) {
       etiquetas,
       alert: {
         status: 'error',
-        text: 'Ocurrió un error al publicar. Intenta de nuevo',
+        text: `Error al publicar: ${error.message}. Intenta de nuevo.`,
       },
       formValues: req.body,
     });
@@ -210,7 +259,7 @@ export async function editar(req, res) {
     mimeType,
     licencia_id,
     marca_agua_texto,
-    etiquetas,
+    etiquetasTexto,
   } = resultado.data;
 
   try {
