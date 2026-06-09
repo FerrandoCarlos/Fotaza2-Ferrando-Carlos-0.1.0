@@ -169,10 +169,8 @@ export async function index(req, res) {
     const totalDestacadas = Math.ceil(otrasPublicaciones.length * 0.7);
     const totalResto = otrasPublicaciones.length - totalDestacadas;
 
-    otrasPublicaciones = [
-      ...destacadas.slice(0, totalDestacadas),
-      ...resto.slice(0, totalResto),
-    ];
+    otrasPublicaciones = [...destacadas, ...resto];
+
     // Se muestran en carrusel solo publicaciones publicas
     const publicacionesCarrusel = otrasPublicaciones.filter((p) => {
       return (

@@ -35,8 +35,8 @@ block content
           class="w-full bg-zinc-800 border border-zinc-700 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-400"
         )
         img#preview(class="hidden mt-3 w-full max-h-64 object-cover rounded-lg")
-        input#imgBase64(type="hidden" name="imgBase64" value=publicacion.Imagens[0].datos)
-        input#mimeType(type="hidden" name="mimeType" value=publicacion.Imagens[0].mimeType)
+        input#imgBase64(type="hidden" name="imgBase64" value=(publicacion.Imagens && publicacion.Imagens.length ? publicacion.Imagens[0].datos : ""))
+        input#mimeType(type="hidden" name="mimeType" value=(publicacion.Imagens && publicacion.Imagens.length ? publicacion.Imagens[0].mime_type : "image/jpeg"))
 
       div
         label(for="licencia_id" class="block text-sm text-gray-400 mb-1") Licencia
