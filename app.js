@@ -10,6 +10,7 @@ import authRoutes from './src/routes/authRoutes.js';
 import publicacionRoutes from './src/routes/publicacionRoutes.js';
 import imagenRoutes from './src/routes/imagenRoutes.js';
 import comentarioRoutes from './src/routes/comentarioRoutes.js';
+import seguimientoRoutes from './src/routes/seguimientoRoutes.js';
 
 dotenv.config();
 
@@ -65,6 +66,8 @@ app.use('/', indexRouter);
 app.use('/', imagenRoutes);
 // Ruta de comentarios
 app.use('/', comentarioRoutes);
+// Ruta de seguimiento
+app.use('/', seguimientoRoutes);
 
 // Conexión BD + arranque del servidor
 connectDatabase()
