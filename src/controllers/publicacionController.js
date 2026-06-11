@@ -279,7 +279,7 @@ export async function editar(req, res) {
       {
         licencia_id,
         datos: imgBase64,
-        mimeType: mimeType,
+        mime_type: mimeType,
         marca_agua_texto:
           licencia.tiene_copyright && marca_agua_texto
             ? marca_agua_texto

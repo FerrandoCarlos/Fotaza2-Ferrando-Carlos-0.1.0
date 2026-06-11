@@ -21,7 +21,7 @@ dotenv.config();
  */
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // __dirname con ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -32,7 +32,10 @@ app.set('view engine', 'pug');
 app.set('views', join(__dirname, 'views'));
 
 // TRUST PROXY (Render no tire las sesiones)
-app.set('trust proxy', 1);
+const esProduccion = process.env.NODE_ENV === 'production';
+if (esProduccion) {
+  app.set('trust proxy', 1);
+}
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
@@ -45,7 +48,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: esProduccion,
+      sameSite: esProduccion ? 'none' : 'lax',
+    },
   })
 );
 

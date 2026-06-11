@@ -35,7 +35,7 @@ block content
               form(action=`/usuario/${usuario.id}/seguir` method="post")
                 button(type="submit" class="bg-amber-400 text-zinc-950 font-semibold px-5 py-2 rounded-lg hover:bg-amber-300 transition-colors text-sm cursor-pointer") Seguir
 
-    //- Grilla de publicaciones (Ahora ADENTRO de la sección para respetar el max-w-4xl)
+    //- Grilla de publicaciones
     div(class="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-zinc-800 pt-8 mt-8")
       each pub in publicaciones
         a(href=`/publicacion/${pub.id}` class="block group")
