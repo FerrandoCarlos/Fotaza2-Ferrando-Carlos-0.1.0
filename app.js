@@ -10,6 +10,7 @@ import authRoutes from './src/routes/authRoutes.js';
 import publicacionRoutes from './src/routes/publicacionRoutes.js';
 import imagenRoutes from './src/routes/imagenRoutes.js';
 import comentarioRoutes from './src/routes/comentarioRoutes.js';
+import seguimientoRoutes from './src/routes/seguimientoRoutes.js';
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ dotenv.config();
  */
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // __dirname con ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -31,7 +32,10 @@ app.set('view engine', 'pug');
 app.set('views', join(__dirname, 'views'));
 
 // TRUST PROXY (Render no tire las sesiones)
-app.set('trust proxy', 1);
+const esProduccion = process.env.NODE_ENV === 'production';
+if (esProduccion) {
+  app.set('trust proxy', 1);
+}
 
 // Middlewares
 app.use(express.json({ limit: '50mb' }));
@@ -44,7 +48,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: esProduccion,
+      sameSite: esProduccion ? 'none' : 'lax',
+    },
   })
 );
 
@@ -65,6 +73,8 @@ app.use('/', indexRouter);
 app.use('/', imagenRoutes);
 // Ruta de comentarios
 app.use('/', comentarioRoutes);
+// Ruta de seguimiento
+app.use('/', seguimientoRoutes);
 
 // Conexión BD + arranque del servidor
 connectDatabase()

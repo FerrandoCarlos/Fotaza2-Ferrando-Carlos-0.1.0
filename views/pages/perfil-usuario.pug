@@ -1,0 +1,48 @@
+extends ../layout.pug
+
+block content
+  section(class="max-w-4xl mx-auto px-8 py-12")
+
+    //- Contenedor de información del perfil (Avatar + Datos alineados)
+    div(class="flex items-center gap-6 mb-8")
+      if usuario.avatar_url
+        img(class="w-20 h-20 rounded-full object-cover border border-zinc-800" src=usuario.avatar_url)
+      else
+        span(class="w-20 h-20 rounded-full bg-amber-400 text-zinc-950 text-2xl font-bold flex items-center justify-center")
+          | #{usuario.nombre[0].toUpperCase()}#{usuario.apellido[0].toUpperCase()}
+
+      //- Anidamos el nombre y contadores al lado del avatar
+      div
+        h1(class="text-2xl font-bold text-gray-100") #{usuario.nombre} #{usuario.apellido}
+        div(class="flex gap-6 mt-2")
+          span(class="text-gray-400 text-sm")
+            span(class="text-gray-100 font-semibold") #{seguidores}
+            |  seguidores
+          span(class="text-gray-400 text-sm")
+            span(class="text-gray-100 font-semibold") #{siguiendo}
+            |  siguiendo
+          span(class="text-gray-400 text-sm")
+            span(class="text-gray-100 font-semibold") #{publicaciones.length}
+            |  publicaciones
+
+        //- Botón de Seguir / Dejar de seguir bajo los contadores
+        if currentUser && currentUser.id !== usuario.id
+          div(class="mt-4")
+            if yaSigue
+              form(action=`/usuario/${usuario.id}/dejar-de-seguir` method="post")
+                button(type="submit" class="border border-zinc-700 text-gray-300 px-5 py-2 rounded-lg hover:border-red-500 hover:text-red-400 transition-colors text-sm cursor-pointer") Dejar de seguir
+            else
+              form(action=`/usuario/${usuario.id}/seguir` method="post")
+                button(type="submit" class="bg-amber-400 text-zinc-950 font-semibold px-5 py-2 rounded-lg hover:bg-amber-300 transition-colors text-sm cursor-pointer") Seguir
+
+    //- Grilla de publicaciones
+    div(class="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-zinc-800 pt-8 mt-8")
+      each pub in publicaciones
+        a(href=`/publicacion/${pub.id}` class="block group")
+          div(class="aspect-square overflow-hidden rounded-lg bg-zinc-800 border border-zinc-800 relative")
+            if pub.Imagens && pub.Imagens.length
+              //- w-full h-full y object-cover aseguran que llene el cuadrado sin estirarse feo
+              img(class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" src=`/imagen/${pub.Imagens[0].id}` alt=pub.titulo)
+            else
+              div(class="w-full h-full flex items-center justify-center")
+                span(class="text-gray-600 text-sm") Sin imagen
