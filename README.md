@@ -163,9 +163,15 @@ La aplicación se encuentra completamente desplegada y operativa en la nube medi
 
 🔗 URL del Proyecto en Vivo: https://fotaza2-comunidad-academica.onrender.com
 
-🎬 Video de la Demostración (YouTube): [Mirar video de defensa del proyecto]()
+🎬 Video de la Demostración (YouTube): [Mirar video del proyecto](https://youtu.be/EH0V2LdYj20)
 
 ## 🧗 Desafíos técnicos y soluciones
+
+- Curva de aprendizaje en el diseño e implementación de un Modelo Relacional Complejo
+
+- **Desafío:** Uno de los mayores retos del proyecto fue enfrentarse por primera vez al desarrollo de una arquitectura de base de datos tan robusta y con múltiples entidades interconectadas (Usuarios, Roles, Publicaciones, Imágenes, Comentarios, Valoraciones, Etiquetas y Seguimientos). Al no contar con una base profunda previa en el manejo de modelos relacionales de esta escala y su despliegue en entornos Cloud (Neon), el diseño de la integridad referencial, las restricciones de clave foránea y el mapeo de asociaciones supuso una experiencia de aprendizaje intensa y compleja.
+
+- **Solución aplicada:** Se profundizó en la documentación de Sequelize y PostgreSQL para comprender el funcionamiento de las relaciones uno a muchos y muchos a muchos (tablas intermedias). A través del ensayo, error y la resolución de conflictos de asincronismo en producción, se logró dominar la persistencia de datos. El resultado es un esquema sólido que soporta todo el flujo de la comunidad académica de Fotaza 2.
 
 - **Falso Positivo en Seguridad de Despliegue (Google Web Risk):** Durante el proceso de Continuous Deployment en Render, los algoritmos automatizados de seguridad clasificaron erróneamente el dominio asignado por la plataforma como potencial riesgo de seguridad (Google Web Risk). Esto derivó en una suspensión temporal preventiva de la cuenta. Tras realizar el descargo técnico correspondiente, demostrar la legitimidad del código fuente del TPI y verificar que no existían scripts maliciosos, la cuenta fue restituida y el proyecto quedó operativo en producción sin inconvenientes.
 
