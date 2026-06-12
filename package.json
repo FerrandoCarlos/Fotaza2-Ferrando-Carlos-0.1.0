@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "concurrently \"node --watch app.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --watch\"",
     "build": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/output.css --minify",
-    "db:init": "node src/utils/dbInit.js",
+    "db:init": "node src/utils/dbInit.js && node src/utils/seed.js",
     "seed": "node src/utils/seed.js"
   },
   "repository": {
